@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Energética Sostenible | Inicio</title>
+    <style>
+        :root {
+            --jade-dark: #004d40;
+            --jade-medium: #00796b;
+            --jade-light: #e0f2f1;
+            --turquesa: #26a69a;
+            --turquesa-glow: #80cbc4;
+            --gold-gradient: linear-gradient(135deg, #ffe082 0%, #ffb300 50%, #ffa000 100%);
+            --gold-hover: linear-gradient(135deg, #fff8e1 0%, #ffca28 100%);
+            --white-glass: rgba(255, 255, 255, 0.88);
+            --border-glass: rgba(38, 166, 154, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            /* Fondo místico y natural con los tonos solicitados */
+            background: linear-gradient(135deg, var(--jade-dark) 0%, var(--jade-medium) 40%, #009688 75%, var(--turquesa-glow) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Destellos mágicos decorativos de fondo */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(255,224,130,0.12) 0%, transparent 70%);
+            top: -20%;
+            right: -10%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Barra de Navegación Superior Principal */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: rgba(0, 51, 44, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 3px solid var(--turquesa);
+            z-index: 10;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-brand span {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #b2dfdb;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--jade-dark);
+            background: var(--gold-gradient);
+            box-shadow: 0 4px 10px rgba(255, 179, 0, 0.3);
+        }
+
+        /* Contenedor del Hero (Presentación Principal) */
+        .hero-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px;
+            z-index: 2;
+            text-align: center;
+        }
+
+        /* Tarjeta Central de Bienvenida (Efecto Entre Páginas) */
+        .welcome-card {
+            background: var(--white-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid var(--border-glass);
+            padding: 50px;
+            border-radius: 24px;
+            max-width: 900px;
+            box-shadow: 0 20px 50px rgba(0, 51, 44, 0.5);
+            animation: cardFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .welcome-card h1 {
+            font-size: 2.8rem;
+            color: var(--jade-dark);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .welcome-card h1 em {
+            font-style: normal;
+            background: linear-gradient(135deg, var(--jade-medium) 0%, var(--turquesa) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .welcome-card p.intro-text {
+            font-size: 1.15rem;
+            color: #334155;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            max-width: 750px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Grilla de Módulos / Accesos Directos */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .module-item {
+            background: white;
+            border: 1.5px solid #b2dfdb;
+            padding: 30px 20px;
+            border-radius: 16px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .module-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--turquesa);
+            box-shadow: 0 12px 24px rgba(0, 121, 107, 0.15);
+            background: linear-gradient(180deg, white 0%, var(--jade-light) 100%);
+        }
+
+        .module-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .module-item h3 {
+            color: var(--jade-dark);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .module-item p {
+            font-size: 0.9rem;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        /* Botón de Entrada con el Degradado Dorado */
+        .btn-enter {
+            display: inline-block;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4a3600;
+            background: var(--gold-gradient);
+            border: none;
+            border-radius: 40px;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(255, 160, 0, 0.4);
+            transition: all 0.25s ease;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.4);
+        }
+
+        .btn-enter:hover {
+            background: var(--gold-hover);
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 160, 0, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Menú de Navegación -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            🌱 EcoSistemas <span>Sostenibles</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">Inicio</a></li>
+            <li><a href="#">Nosotros</a></li>
+            <li><a href="#">Indicadores</a></li>
+            <li><a href="#">Soporte</a></li>
+        </ul>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="hero-container">
+        <div class="welcome-card">
+            <h1>Bienvenido al Sistema de <br><em>Gestión Energética Sostenible</em></h1>
+            
+            <p class="intro-text">
+                Una plataforma inteligente diseñada para el control, optimización e innovación de suministros. 
+                Evalúa tu consumo tecnológico y descubre cómo mitigar de manera efectiva tu huella ecológica.
+            </p>
+
+            <!-- Bloques de Módulos Principales -->
+            <div class="modules-grid">
+                <!-- Módulo 1 -->
+                <div class="module-item">
+                    <span class="module-icon">📊</span>
+                    <h3>Estimación Energética</h3>
+                    <p>Calcula y proyecta el consumo eléctrico de tus componentes analizando el impacto de CO₂.</p>
+                </div>
+
+                <!-- Módulo 2 -->
+                <div class="module-item">
+                    <span class="module-icon">📈</span>
+                    <h3>Seguimiento de Gestión</h3>
+                    <p>Monitorea el historial de consumo, detecta anomalías y evalúa la eficiencia mensual.</p>
+                </div>
+
+                <!-- Módulo 3 -->
+                <div class="module-item">
+                    <span class="module-icon">🌿</span>
+                    <h3>Infraestructura</h3>
+                    <p>Explora alternativas eco-amigables y tecnologías de energía limpia para tus suministros.</p>
+                </div>
+            </div>
+
+            <!-- Botón de Acción Principal -->
+            <a href="login.html" class="btn-enter">Ingresar al Sistema ✨</a>
+        </div>
+    </main>
+
+</body>
+</html>

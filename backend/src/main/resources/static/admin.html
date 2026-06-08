@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración y Huella de Carbono | EcoGlow</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --jade-dark: #004d40;
+            --jade-medium: #00796b;
+            --jade-light: #e0f2f1;
+            --turquesa: #26a69a;
+            --turquesa-glow: #80cbc4;
+            --gold-gradient: linear-gradient(135deg, #ffe082 0%, #ffb300 50%, #ffa000 100%);
+            --dark-slate: #1e293b;
+            --white-glass: rgba(255, 255, 255, 0.94);
+            --border-glass: rgba(38, 166, 154, 0.2);
+            --text-dark: #334155;
+            
+            /* Colores del Semáforo Ecológico */
+            --eco-verde: #065f46;
+            --eco-verde-bg: #d1fae5;
+            --eco-alerta: #92400e;
+            --eco-alerta-bg: #fef3c7;
+            --eco-peligro: #991b1b;
+            --eco-peligro-bg: #fee2e2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f0fdfa;
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--jade-dark) 0%, var(--jade-medium) 100%);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            padding: 25px 0;
+            position: fixed;
+            height: 100vh;
+            box-shadow: 4px 0 15px rgba(0, 51, 44, 0.15);
+        }
+
+        .sidebar-brand {
+            padding: 0 25px 30px 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 1.3rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            margin-top: 25px;
+            flex-grow: 1;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.98rem;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            border-left-color: #ffe082;
+        }
+
+        .sidebar-footer {
+            padding: 0 25px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #ffffff;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-logout:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        /* Workspace Principal */
+        .main-workspace {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 40px;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            background: #ffffff;
+            padding: 20px 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        }
+
+        .topbar-title h2 {
+            color: var(--jade-dark);
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            color: var(--jade-dark);
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            background: var(--jade-light);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            border: 2px solid var(--turquesa);
+        }
+
+        /* Control de Paneles (SPA) */
+        .admin-panel {
+            display: none;
+            animation: fadeInWorkspace 0.4s ease-out;
+        }
+
+        .active-panel {
+            display: block;
+        }
+
+        @keyframes fadeInWorkspace {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Grid de Métricas */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+
+        .metric-card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--turquesa);
+        }
+
+        .metric-card.alert::before { background: #ffb300; }
+
+        .metric-title {
+            font-size: 0.88rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-light);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--jade-dark);
+        }
+
+        /* Bloques de Gráficos y Tablas */
+        .panel-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 35px;
+        }
+
+        .panel-layout.full-width {
+            grid-template-columns: 1fr;
+        }
+
+        .panel-block {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .panel-block h3 {
+            color: var(--jade-dark);
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Tablas */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            color: var(--text-dark);
+            padding: 14px 16px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.92rem;
+        }
+
+        /* Semáforo Ecológico Badges */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .badge-bajo { background: var(--eco-verde-bg); color: var(--eco-verde); }
+        .badge-medio { background: var(--eco-alerta-bg); color: var(--eco-alerta); }
+        .badge-alto { background: var(--eco-peligro-bg); color: var(--eco-peligro); }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <span>🌱</span> EcoGlow Admin
+        </div>
+        <ul class="sidebar-menu">
+            <li><a onclick="switchPanel('dashboard', this)" class="active">📊 Consumo General</a></li>
+            <li><a onclick="switchPanel('clientes', this)">👥 Clientes y Suministros</a></li>
+            <li><a onclick="switchPanel('reportes', this)">🌿 Reporte Huella CO2</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <button class="btn-logout" onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
+        </div>
+    </aside>
+
+    <main class="main-workspace">
+        <header class="topbar">
+            <div class="topbar-title">
+                <h2 id="panel-title-text">Consumo General</h2>
+            </div>
+            <div class="user-profile">
+                <span id="admin-name">Admin: Cargando...</span>
+                <div class="user-avatar">💻</div>
+            </div>
+        </header>
+
+        <div id="panel-dashboard" class="admin-panel active-panel">
+            <div class="overview-grid">
+                <div class="metric-card">
+                    <div class="metric-title">Energía Monitoreada Total</div>
+                    <div class="metric-value" id="metric-kwh">0.0 kWh</div>
+                </div>
+                <div class="metric-card alert">
+                    <div class="metric-title">Recaudación por Consumos</div>
+                    <div class="metric-value" id="metric-soles">S/. 0.00</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Clientes Activos</div>
+                    <div class="metric-value" id="metric-clientes">0</div>
+                </div>
+            </div>
+
+            <div class="panel-layout">
+                <div class="panel-block">
+                    <h3>📈 Distribución de Energía por Suministros (kWh)</h3>
+                    <div class="chart-container">
+                        <canvas id="chartConsumoGeneral"></canvas>
+                    </div>
+                </div>
+                <div class="panel-block">
+                    <h3>⚖️ Impacto de Carbono por Categoría</h3>
+                    <div class="chart-container">
+                        <canvas id="chartHuellaPie"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel-clientes" class="admin-panel">
+            <div class="panel-layout full-width">
+                <div class="panel-block">
+                    <h3>👥 Directorio de Clientes y Suministros Vinculados</h3>
+                    <table class="data-table" id="tabla-clientes">
+                        <thead>
+                            <tr>
+                                <th>ID Cliente</th>
+                                <th>Nombre Completo</th>
+                                <th>Dirección Registrada</th>
+                                <th>ID Tarifa Asignada</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel-reportes" class="admin-panel">
+            <div class="panel-layout full-width">
+                <div class="panel-block">
+                    <h3>🌿 Semáforo de Control Ambiental e Indicadores de Carbono</h3>
+                    <table class="data-table" id="tabla-reporte-co2">
+                        <thead>
+                            <tr>
+                                <th>ID Registro</th>
+                                <th>Fecha Registro</th>
+                                <th>Cliente</th>
+                                <th>Total Consumido (kWh)</th>
+                                <th>Huella Carbono</th>
+                                <th>Semáforo Ecológico</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- VERIFICACIÓN DE SESIÓN Y ATRIBUTOS ---
+        let adminSesion = null;
+
+        function verificarSesion() {
+            const sesionRaw = localStorage.getItem('usuarioSesion');
+            if (sesionRaw) {
+                const sesion = JSON.parse(sesionRaw);
+                // Validamos que sea un administrador según los campos de tu tabla `administrador`
+                if (sesion.datos && (sesion.datos.usuario || sesion.datos.idAdministrador)) {
+                    adminSesion = sesion.datos;
+                    document.getElementById('admin-name').innerText = `Admin: ${adminSesion.nombre || adminSesion.usuario}`;
+                    cargarDatosDesdeBD();
+                } else {
+                    // Si la sesión no es de un administrador, redirige al login
+                    window.location.href = "login.html";
+                }
+            } else {
+                window.location.href = "login.html";
+            }
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem('usuarioSesion');
+            window.location.href = "login.html";
+        }
+
+        // --- CONEXIÓN DINÁMICA CON EL BACKEND SPRING BOOT ---
+        async function cargarDatosDesdeBD() {
+            let listaClientes = [];
+            let listaConsumos = [];
+
+            // 1. Fetch de Clientes
+            try {
+                const resClientes = await fetch('http://localhost:8080/api/clientes');
+                if (resClientes.ok) listaClientes = await resClientes.json();
+            } catch (err) {
+                console.log("Servidor offline. Usando datos de respaldo.");
+                // Fallback con los mismos nombres estipulados en tu script SQL
+                listaClientes = [
+                    { idCliente: 41206, nombre: "Vilma Angelica Diaz Diaz", direccion: "Av. Las Flores 456", idTarifa: 3 },
+                    { idCliente: 41207, nombre: "Juan Perez Gomez", direccion: "Jr. Ica 123", idTarifa: 1 }
+                ];
+            }
+
+            // 2. Fetch de Consumos
+            try {
+                const resConsumos = await fetch('http://localhost:8080/api/consumos');
+                if (resConsumos.ok) listaConsumos = await resConsumos.json();
+            } catch (err) {
+                listaConsumos = [
+                    { idConsumo: 10, idCliente: 41206, totalKwh: 120.50, costoTotal: 81.94, huellaCarbono: 25.30, fecha: "2026-06-01" },
+                    { idConsumo: 11, idCliente: 41207, totalKwh: 310.20, costoTotal: 210.93, huellaCarbono: 65.14, fecha: "2026-06-03" }
+                ];
+            }
+
+            calcularMetricasYTablas(listaClientes, listaConsumos);
+        }
+
+        function calcularMetricasYTablas(clientes, consumos) {
+            // Cálculos para las Tarjetas de Métricas superiores
+            let totalKwh = 0;
+            let totalSoles = 0;
+            consumos.forEach(c => {
+                totalKwh += parseFloat(c.totalKwh || 0);
+                totalSoles += parseFloat(c.costoTotal || 0);
+            });
+
+            document.getElementById('metric-kwh').innerText = `${totalKwh.toFixed(1)} kWh`;
+            document.getElementById('metric-soles').innerText = `S/. ${totalSoles.toFixed(2)}`;
+            document.getElementById('metric-clientes').innerText = clientes.length;
+
+            // Renderizar Panel de Clientes
+            const tbodyClientes = document.querySelector('#tabla-clientes tbody');
+            tbodyClientes.innerHTML = '';
+            clientes.forEach(cli => {
+                const row = tbodyClientes.insertRow();
+                row.innerHTML = `
+                    <td><b>CLI-${cli.idCliente}</b></td>
+                    <td>${cli.nombre}</td>
+                    <td>${cli.direccion || 'No registrada'}</td>
+                    <td><span style="color:var(--jade-medium); font-weight:700;">Tarifa ${cli.idTarifa}</span></td>
+                `;
+            });
+
+            // Renderizar Panel de Reporte de Huella CO2 y Semáforo Ecológico
+            const tbodyCo2 = document.querySelector('#tabla-reporte-co2 tbody');
+            tbodyCo2.innerHTML = '';
+            
+            consumos.forEach(con => {
+                const clienteAsociado = clientes.find(c => c.idCliente === con.idCliente);
+                const nombreCliente = clienteAsociado ? clienteAsociado.nombre : `Cliente ID: ${con.idCliente}`;
+                
+                // Clasificación del Semáforo basado en el total de kWh consumidos
+                let badgeHtml = '';
+                if (con.totalKwh < 150) {
+                    badgeHtml = `<span class="badge badge-bajo">🟢 Bajo Consumo</span>`;
+                } else if (con.totalKwh >= 150 && con.totalKwh <= 300) {
+                    badgeHtml = `<span class="badge badge-medio">🟡 Moderado</span>`;
+                } else {
+                    badgeHtml = `<span class="badge badge-alto">🔴 Alto Riesgo</span>`;
+                }
+
+                const row = tbodyCo2.insertRow();
+                row.innerHTML = `
+                    <td><b>CON-${con.idConsumo}</b></td>
+                    <td>${con.fecha || 'Reciente'}</td>
+                    <td>${nombreCliente}</td>
+                    <td>${parseFloat(con.totalKwh).toFixed(2)} kWh</td>
+                    <td><b>${parseFloat(con.huellaCarbono).toFixed(2)} kg CO2</b></td>
+                    <td>${badgeHtml}</td>
+                `;
+            });
+
+            // Generar los gráficos estadísticos basados en los datos calculados
+            renderizarGraficosDinámicos(consumos);
+        }
+
+        // --- INSTANCIACIÓN CONTROLADA DE CHART.JS ---
+        let chartConsumoInstance = null;
+        let chartHuellaInstance = null;
+
+        function renderizarGraficosDinámicos(consumos) {
+            // Agrupamos datos para las gráficas
+            const labelsSuministros = consumos.map(c => `REG-${c.idConsumo}`);
+            const dataKwh = consumos.map(c => c.totalKwh);
+
+            // Clasificación para el gráfico de torta (Pie Chart)
+            let bajoCount = 0, medioCount = 0, altoCount = 0;
+            consumos.forEach(c => {
+                if (c.totalKwh < 150) bajoCount++;
+                else if (c.totalKwh >= 150 && c.totalKwh <= 300) medioCount++;
+                else altoCount++;
+            });
+
+            // Gráfico de Barras - Consumo General
+            const ctxBar = document.getElementById('chartConsumoGeneral').getContext('2d');
+            if (chartConsumoInstance) chartConsumoInstance.destroy();
+            chartConsumoInstance = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: labelsSuministros,
+                    datasets: [{
+                        label: 'Consumo por Registro (kWh)',
+                        data: dataKwh,
+                        backgroundColor: '#26a69a',
+                        borderRadius: 6
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            // Gráfico de Torta - Semáforo
+            const ctxPie = document.getElementById('chartHuellaPie').getContext('2d');
+            if (chartHuellaInstance) chartHuellaInstance.destroy();
+            chartHuellaInstance = new Chart(ctxPie, {
+                type: 'pie',
+                data: {
+                    labels: ['Bajo 🟢', 'Moderado 🟡', 'Alto Riesgo 🔴'],
+                    datasets: [{
+                        data: [bajoCount, medioCount, altoCount],
+                        backgroundColor: ['#00796b', '#ffb300', '#991b1b']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        // Intercambio SPA de los páneles de navegación
+        function switchPanel(panelId, element) {
+            document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active-panel'));
+            document.querySelectorAll('.sidebar-menu a').forEach(link => link.classList.remove('active'));
+
+            document.getElementById(`panel-${panelId}`).classList.add('active-panel');
+            element.classList.add('active');
+
+            document.getElementById('panel-title-text').innerText = element.innerText.trim();
+            
+            if (panelId === 'dashboard') {
+                cargarDatosDesdeBD();
+            }
+        }
+
+        // Carga inicial controlada
+        document.addEventListener("DOMContentLoaded", function() {
+            verificarSesion();
+        });
+    </script>
+</body>
+</html>

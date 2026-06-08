@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión Energética | Iniciar Sesión</title>
+    <style>
+        :root {
+            --jade-dark: #004d40;
+            --jade-medium: #00796b;
+            --jade-light: #e0f2f1;
+            --turquesa: #26a69a;
+            --turquesa-glow: #80cbc4;
+            --gold-gradient: linear-gradient(135deg, #ffe082 0%, #ffb300 50%, #ffa000 100%);
+            --gold-hover: linear-gradient(135deg, #fff8e1 0%, #ffca28 100%);
+            --white-glass: rgba(255, 255, 255, 0.88);
+            --border-glass: rgba(38, 166, 154, 0.25);
+            --dark-slate: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--jade-dark) 0%, var(--jade-medium) 40%, #009688 75%, var(--turquesa-glow) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,224,130,0.1) 0%, transparent 70%);
+            top: -10%;
+            right: -10%;
+            pointer-events: none;
+        }
+
+        .login-container {
+            background: var(--white-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid var(--border-glass);
+            padding: 40px 35px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 20px 50px rgba(0, 51, 44, 0.4);
+            text-align: center;
+            animation: loginAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes loginAppear {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .login-header {
+            margin-bottom: 25px;
+        }
+
+        .login-header .logo-eco {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        .login-header h2 {
+            color: var(--jade-dark);
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .login-header p {
+            color: #556b68;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .role-selector {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            background: rgba(0, 77, 64, 0.08);
+            padding: 12px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(38, 166, 154, 0.2);
+        }
+
+        .role-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: var(--jade-dark);
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .role-option input[type="radio"] {
+            accent-color: var(--jade-medium);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: var(--jade-dark);
+            letter-spacing: 0.3px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid rgba(38, 166, 154, 0.3);
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--dark-slate);
+            background-color: rgba(255, 255, 255, 0.8);
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--turquesa);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(38, 166, 154, 0.15);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #4a3600;
+            background: var(--gold-gradient);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 160, 0, 0.3);
+            transition: all 0.25s ease;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.4);
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            background: var(--gold-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 7px 20px rgba(255, 160, 0, 0.45);
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border: 1px solid #ffcdd2;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <header class="login-header">
+            <span class="logo-eco">🌱</span>
+            <h2>Inicio de Sesión</h2>
+            <p>Selecciona tipo de ingreso</p>
+        </header>
+
+        <div class="role-selector">
+            <label class="role-option">
+                <input type="radio" name="tipoIngreso" value="CLIENTE" checked onchange="conmutarCampos()">
+                Cliente
+            </label>
+            <label class="role-option">
+                <input type="radio" name="tipoIngreso" value="ADMINISTRADOR" onchange="conmutarCampos()">
+                Administrador
+            </label>
+        </div>
+
+        <div id="alertBox" class="error-message hidden"></div>
+
+        <form id="loginForm" onsubmit="procesarAutenticacion(event)">
+            
+            <div class="form-group" id="grupoCliente">
+                <label for="clienteId">ID Cliente:</label>
+                <input type="number" id="clienteId" class="form-control" placeholder="Ej. 41206">
+            </div>
+
+            <div class="form-group hidden" id="grupoUsuarioAdmin">
+                <label for="adminUser">Usuario:</label>
+                <input type="text" id="adminUser" class="form-control" placeholder="Ej. admin" autocomplete="username">
+            </div>
+
+            <div class="form-group hidden" id="grupoClaveAdmin">
+                <label for="adminPassword">Clave:</label>
+                <input type="password" id="adminPassword" class="form-control" placeholder="••••••••" autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="btn-login">Ingresar</button>
+        </form>
+    </div>
+
+    <script>
+        function conmutarCampos() {
+            const tipo = document.querySelector('input[name="tipoIngreso"]:checked').value;
+            const grupoCliente = document.getElementById('grupoCliente');
+            const grupoUsuarioAdmin = document.getElementById('grupoUsuarioAdmin');
+            const grupoClaveAdmin = document.getElementById('grupoClaveAdmin');
+            const alertBox = document.getElementById('alertBox');
+            
+            alertBox.classList.add('hidden');
+
+            if (tipo === 'CLIENTE') {
+                grupoCliente.remove();
+                document.getElementById('loginForm').insertBefore(grupoCliente, document.getElementById('loginForm').firstChild);
+                grupoCliente.classList.remove('hidden');
+                grupoUsuarioAdmin.classList.add('hidden');
+                grupoClaveAdmin.classList.add('hidden');
+                document.getElementById('clienteId').required = true;
+                document.getElementById('adminUser').required = false;
+                document.getElementById('adminPassword').required = false;
+            } else {
+                grupoCliente.classList.add('hidden');
+                grupoUsuarioAdmin.classList.remove('hidden');
+                grupoClaveAdmin.classList.remove('hidden');
+                document.getElementById('clienteId').required = false;
+                document.getElementById('adminUser').required = true;
+                document.getElementById('adminPassword').required = true;
+            }
+        }
+
+        // Corrección de bug visual en la carga inicial de elementos ocultos
+        document.addEventListener("DOMContentLoaded", function() {
+            conmutarCampos();
+        });
+
+        function procesarAutenticacion(event) {
+            event.preventDefault();
+            const alertBox = document.getElementById('alertBox');
+            alertBox.classList.add('hidden');
+            
+            const tipo = document.querySelector('input[name="tipoIngreso"]:checked').value;
+
+            if (tipo === 'CLIENTE') {
+                const idCliente = document.getElementById('clienteId').value;
+                
+                // Petición REST nativa estructurada en formato JSON hacia Spring Boot
+                fetch(`http://localhost:8080/api/clientes/${idCliente}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("El ID de Cliente no existe en la base de datos.");
+                    }
+                    return response.json();
+                })
+                .then(cliente => {
+                    localStorage.setItem('usuarioSesion', JSON.stringify({ tipo: 'CLIENTE', datos: cliente }));
+                    window.location.href = 'cliente.html'; 
+                })
+                .catch(err => {
+                    mostrarError(err.message);
+                });
+
+            } else {
+                const txtUsuario = document.getElementById('adminUser').value;
+                const txtClave = document.getElementById('adminPassword').value;
+
+                // Envío en formato JSON crudo obligatorio para controladores Spring Boot con @RequestBody
+                fetch('http://localhost:8080/api/administradores/login', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        usuario: txtUsuario, 
+                        clave: txtClave 
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Usuario o clave de administrador incorrectos.");
+                    }
+                    return response.json();
+                })
+                .then(admin => {
+                    localStorage.setItem('usuarioSesion', JSON.stringify({ tipo: 'ADMIN', datos: admin }));
+                    window.location.href = 'admin.html'; 
+                })
+                .catch(err => {
+                    mostrarError(err.message);
+                });
+            }
+        }
+
+        function mostrarError(mensaje) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.innerText = mensaje;
+            alertBox.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

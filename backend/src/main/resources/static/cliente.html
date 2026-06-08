@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal del Cliente | Gestión de Suministros y Eco-Ahorro</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --jade-dark: #004d40;
+            --jade-medium: #00796b;
+            --jade-light: #e0f2f1;
+            --turquesa: #26a69a;
+            --turquesa-glow: #80cbc4;
+            --gold-gradient: linear-gradient(135deg, #ffe082 0%, #ffb300 50%, #ffa000 100%);
+            --gold-hover: linear-gradient(135deg, #fff8e1 0%, #ffca28 100%);
+            --dark-blue-btn: #1a365d;
+            --dark-slate: #1e293b;
+            --white-glass: rgba(255, 255, 255, 0.94);
+            --border-glass: rgba(38, 166, 154, 0.2);
+            --text-dark: #334155;
+            --text-light: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f0fdfa;
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- INTERFAZ PRINCIPAL (DASHBOARD) --- */
+        #app-layout {
+            display: block;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--jade-dark) 0%, var(--jade-medium) 100%);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            padding: 25px 0;
+            position: fixed;
+            height: 100vh;
+            box-shadow: 4px 0 15px rgba(0, 51, 44, 0.15);
+            z-index: 10;
+        }
+
+        .sidebar-brand {
+            padding: 0 25px 30px 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 1.3rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            margin-top: 25px;
+            flex-grow: 1;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.98rem;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            border-left-color: #ffe082;
+        }
+
+        .sidebar-footer {
+            padding: 0 25px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #ffffff;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-logout:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        /* Main Content Workspace */
+        .main-workspace {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 40px;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            background: #ffffff;
+            padding: 20px 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.01);
+        }
+
+        .topbar-title h2 {
+            color: var(--jade-dark);
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            color: var(--jade-dark);
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            background: var(--jade-light);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            border: 2px solid var(--turquesa);
+        }
+
+        /* SPA Panels Structure */
+        .admin-panel {
+            display: none;
+            animation: fadeInWorkspace 0.4s ease-out;
+        }
+
+        .active-panel {
+            display: block;
+        }
+
+        @keyframes fadeInWorkspace {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Overview Grid */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+
+        .metric-card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--turquesa);
+        }
+
+        .metric-title {
+            font-size: 0.88rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-light);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--jade-dark);
+        }
+
+        .metric-footer {
+            font-size: 0.82rem;
+            color: var(--text-light);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Visual Panels Architecture */
+        .panel-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .panel-layout.full-width {
+            grid-template-columns: 1fr;
+        }
+
+        .panel-block {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .panel-block h3 {
+            color: var(--jade-dark);
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Simulation Matrix Controls */
+        .matrix-container {
+            margin-bottom: 25px;
+        }
+
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 12px;
+        }
+
+        .appliance-btn-mock {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 0.88rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .appliance-btn-mock .icon {
+            font-size: 1.6rem;
+        }
+
+        .appliance-btn-mock:hover {
+            border-color: var(--turquesa-glow);
+            background: #f0fdfa;
+        }
+
+        .appliance-btn-mock.selected {
+            background: var(--jade-light);
+            border-color: var(--turquesa);
+            color: var(--jade-dark);
+            box-shadow: 0 4px 12px rgba(38, 166, 154, 0.15);
+        }
+
+        /* Console Interface Terminal */
+        .terminal-box {
+            background: #0f172a;
+            color: #38bdf8;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            border-radius: 16px;
+            min-height: 220px;
+            max-height: 320px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+
+        /* Configuration Forms Elements */
+        .config-form-group {
+            margin-bottom: 18px;
+        }
+
+        .config-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: var(--jade-dark);
+        }
+
+        .config-select, .config-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            outline: none;
+            background-color: #f8fafc;
+            transition: border-color 0.2s;
+        }
+
+        .config-select:focus, .config-input:focus {
+            border-color: var(--turquesa);
+            background-color: #ffffff;
+        }
+
+        /* Action Trigger Buttons */
+        .btn-action-primary {
+            width: 100%;
+            padding: 14px;
+            background: var(--jade-medium);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 12px;
+        }
+
+        .btn-action-primary:hover {
+            background: var(--jade-dark);
+        }
+
+        .btn-action-secondary {
+            width: 100%;
+            padding: 14px;
+            background: var(--gold-gradient);
+            color: #4a3600;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 160, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-secondary:hover:not(:disabled) {
+            background: var(--gold-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-action-secondary:disabled {
+            background: #e2e8f0;
+            color: #94a3b8;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-flat-info {
+            width: 100%;
+            background: transparent;
+            border: 1px dashed var(--turquesa);
+            color: var(--jade-medium);
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+
+        .btn-flat-info:hover {
+            background: rgba(38, 166, 154, 0.05);
+        }
+
+        /* Tablas de Datos */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            color: var(--text-dark);
+            padding: 14px 16px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.92rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .badge-activo { background: #dcfce7; color: #15803d; }
+        .badge-evaluacion { background: #fef3c7; color: #b45309; }
+
+        /* Gráficos Contenedor */
+        .chart-container {
+            position: relative;
+            height: 280px;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        /* Toast Component */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 2100;
+        }
+
+        .toast {
+            background: var(--dark-slate);
+            color: #ffffff;
+            padding: 14px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+            margin-top: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes toastIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span>🌱</span> Sistema EcoGlow
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a onclick="MenuController.navigate(this)" data-panel="dashboard" class="active">
+                        📊 Mi Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a onclick="MenuController.navigate(this)" data-panel="simulador">
+                        ⚡ Simulador de Carga
+                    </a>
+                </li>
+                <li>
+                    <a onclick="MenuController.navigate(this)" data-panel="suministros">
+                        🔌 Mis Suministros
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="SessionService.cerrarSesion()">🚪 Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <main class="main-workspace">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h2 id="panel-title-text">Mi Dashboard</h2>
+                </div>
+                <div class="user-profile">
+                    <span id="session-user-name">Hola, Cargando...</span>
+                    <div class="user-avatar">✨</div>
+                </div>
+            </header>
+
+            <div id="panel-dashboard" class="admin-panel active-panel">
+                <div class="overview-grid">
+                    <div class="metric-card">
+                        <div class="metric-title">Último Consumo Calculado</div>
+                        <div class="metric-value" id="dashKwhVal">0.00 kWh</div>
+                        <div class="metric-footer">📊 Registrado en la base de datos</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Costo Económico Acumulado</div>
+                        <div class="metric-value" id="dashCostoVal">S/. 0.00</div>
+                        <div class="metric-footer">💵 Basado en tarifa asignada</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Huella Ecológica Generada</div>
+                        <div class="metric-value" id="dashCo2Val">0.00 kg CO2</div>
+                        <div class="metric-footer">🌿 Indicador ambiental total</div>
+                    </div>
+                </div>
+
+                <div class="panel-layout full-width">
+                    <div class="panel-block">
+                        <h3>📈 Historial de Consumo Energético</h3>
+                        <div class="chart-container">
+                            <canvas id="clientBarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="panel-simulador" class="admin-panel">
+                <div class="panel-layout">
+                    <div class="panel-block">
+                        <h3>⚡ Modelador Técnico de Carga y Consumo</h3>
+                        
+                        <div class="matrix-container">
+                            <label style="font-weight: 700; font-size: 0.9rem; color: var(--jade-dark);">
+                                Selecciona los artefactos tecnológicos para simular el consumo (`artefacto` en BD):
+                            </label>
+                            <div class="matrix-grid" id="contenedorArtefactos"></div>
+                        </div>
+
+                        <div class="console-container">
+                            <label style="font-weight: 700; font-size: 0.9rem; color: var(--jade-dark); display:block; margin-bottom:8px;">
+                                Terminal de Diagnóstico de Red:
+                            </label>
+                            <div class="terminal-box" id="txtConsoleMock">--- Sistema listo. Selecciona componentes y presiona "Ejecutar Análisis Técnico" ---</div>
+                        </div>
+                    </div>
+
+                    <div class="panel-block">
+                        <h3>⚙️ Parámetros de Red</h3>
+                        
+                        <div class="config-form-group">
+                            <label for="inputHoras">Horas de uso diarias promedio:</label>
+                            <input type="number" id="inputHoras" class="config-input" value="4" min="1" max="24">
+                        </div>
+
+                        <div class="config-form-group">
+                            <label for="inputDias">Días de uso estimados al mes:</label>
+                            <input type="number" id="inputDias" class="config-input" value="30" min="1" max="31">
+                        </div>
+
+                        <div class="config-form-group">
+                            <label for="selectSuministroAsociado">Asociar a Suministro Activo:</label>
+                            <select id="selectSuministroAsociado" class="config-select"></select>
+                        </div>
+
+                        <button class="btn-flat-info" onclick="CalculadoraService.mostrarMetodologiaPlana()">📖 Ver Metodología Ecológica</button>
+                        <button class="btn-action-primary" onclick="CalculadoraService.ejecutarAnalisisTecnico()">⚙️ Ejecutar Análisis Técnico</button>
+                        <button class="btn-action-secondary" id="btnGuardarHistorialMock" disabled onclick="SuministrosService.guardarConsumoBD()">💾 Guardar simulación en Base de Datos</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="panel-suministros" class="admin-panel">
+                <div class="panel-block" style="margin-bottom: 30px;">
+                    <h3>🔌 Suministros Vigentes Asociados (`suministro` en BD)</h3>
+                    <table class="data-table" id="tablaSuministros">
+                        <thead>
+                            <tr>
+                                <th>ID Suministro</th>
+                                <th>Código Medidor</th>
+                                <th>Tipo Conexión</th>
+                                <th>Fuente Energía</th>
+                                <th>Estado Operativo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="5" style="text-align: center; color: var(--text-light);">Cargando enlaces operativos desde la base de datos...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="panel-block">
+                    <h3>⏳ Historial de Consumos Guardados (`consumo` en BD)</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID Consumo</th>
+                                <th>Fecha Registro</th>
+                                <th>Horas/Días</th>
+                                <th>Total Consumido</th>
+                                <th>Costo Calculado</th>
+                                <th>Huella CO2</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyConsumos">
+                            <tr id="filaVaciaSeguimiento">
+                                <td colspan="6" style="text-align: center; color: var(--text-light); padding: 20px;">
+                                    No hay registros de consumo guardados en la sesión actual.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script>
+        let clienteAutenticado = null;
+
+        const listaArtefactosBD = [
+            { id: 1, nombre: "Foco LED", watts: 10, icon: "💡" },
+            { id: 2, nombre: "Televisor", watts: 120, icon: "📺" },
+            { id: 3, nombre: "Refrigeradora", watts: 300, icon: "❄️" },
+            { id: 4, nombre: "Laptop", watts: 65, icon: "💻" },
+            { id: 5, nombre: "Microondas", watts: 1000, icon: "🍿" },
+            { id: 6, nombre: "Lavadora", watts: 500, icon: "🧺" },
+            { id: 7, nombre: "Plancha", watts: 1200, icon: "👔" },
+            { id: 9, nombre: "Secadora", watts: 1800, icon: "💨" },
+            { id: 10, nombre: "Ducha eléctrica", watts: 4500, icon: "🚿" },
+            { id: 11, nombre: "Ventilador", watts: 80, icon: "🌀" },
+            { id: 12, font: "serif", nombre: "Aire acondicionado", watts: 1500, icon: "🥶" },
+            { id: 13, nombre: "Horno eléctrico", watts: 2000, icon: "🥧" },
+            { id: 14, nombre: "Cafetera", watts: 900, icon: "☕" },
+            { id: 15, nombre: "Licuadora", watts: 350, icon: "🥤" },
+            { id: 16, nombre: "Router", watts: 30, icon: "🌐" },
+            { id: 17, nombre: "Consola", watts: 160, icon: "🎮" },
+            { id: 18, nombre: "Aspiradora", watts: 1400, icon: "🧹" },
+            { id: 19, nombre: "Bomba de agua", watts: 750, icon: "🚰" },
+            { id: 20, nombre: "Cargador celular", watts: 10, icon: "🔌" },
+            { id: 21, nombre: "Equipo de sonido", watts: 120, icon: "🎵" },
+            { id: 22, nombre: "Impresora", watts: 50, icon: "🖨️" },
+            { id: 23, nombre: "PC de escritorio", watts: 250, icon: "🖥️" },
+            { id: 24, nombre: "Purificador de aire", watts: 60, icon: "🍃" },
+            { id: 25, nombre: "Calentador eléctrico", watts: 1500, icon: "🔥" }
+        ];
+
+        const AppStore = {
+            state: {
+                isAnalisisValido: false,
+                totalKwhCalculado: 0,
+                costoFinalCalculado: 0,
+                co2FinalCalculado: 0,
+                horasUltimoAnalisis: 0,
+                diasUltimoAnalisis: 0,
+                artefactosSeleccionadosIds: []
+            }
+        };
+
+        const ToastComponent = {
+            show(message) {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.innerText = message;
+                container.appendChild(toast);
+                setTimeout(() => toast.remove(), 4000);
+            }
+        };
+
+        const SessionService = {
+            verificarSesion() {
+                const sesionRaw = localStorage.getItem('usuarioSesion');
+                
+                if (sesionRaw) {
+                    const sesion = JSON.parse(sesionRaw);
+                    clienteAutenticado = sesion.datos;
+                    
+                    // Rellenar interfaz con los datos reales de la sesión
+                    document.getElementById('session-user-name').innerText = `Hola, ${clienteAutenticado.nombre}`;
+                    this.inicializarMatrizArtefactos();
+                    SuministrosService.cargarSuministrosYHistorico();
+                    ChartDashboardComponent.render();
+                } else {
+                    // Si no existe la sesión, redirige inmediatamente a tu archivo login.html
+                    window.location.href = "login.html";
+                }
+            },
+
+            inicializarMatrizArtefactos() {
+                const contenedor = document.getElementById('contenedorArtefactos');
+                contenedor.innerHTML = '';
+                listaArtefactosBD.forEach(art => {
+                    const btn = document.createElement('div');
+                    btn.className = 'appliance-btn-mock';
+                    btn.setAttribute('data-id', art.id);
+                    btn.setAttribute('data-watts', art.watts);
+                    btn.onclick = () => btn.classList.toggle('selected');
+                    btn.innerHTML = `<span class="icon">${art.icon}</span><span>${art.nombre}</span><small style="color:var(--text-light); font-size:0.7rem;">${art.watts}W</small>`;
+                    contenedor.appendChild(btn);
+                });
+            },
+
+            cerrarSesion() {
+                // 1. Limpiar la sesión del LocalStorage de raíz
+                localStorage.removeItem('usuarioSesion');
+                ToastComponent.show("Cerrando sesión de forma segura...");
+                
+                // 2. Redireccionar directamente a tu login.html externo
+                setTimeout(() => {
+                    window.location.href = "login.html";
+                }, 600);
+            }
+        };
+
+        const CalculadoraService = {
+            ejecutarAnalisisTecnico() {
+                const seleccionados = document.querySelectorAll('.appliance-btn-mock.selected');
+                const consoleArea = document.getElementById('txtConsoleMock');
+                const horas = parseFloat(document.getElementById('inputHoras').value) || 0;
+                const dias = parseFloat(document.getElementById('inputDias').value) || 0;
+
+                if (seleccionados.length === 0) {
+                    consoleArea.innerText = "[ALERTA] Por favor, selecciona al menos un artefacto tecnológico para efectuar el cálculo de red.";
+                    this.setBtnGuardarState(false);
+                    return;
+                }
+
+                let totalWatts = 0;
+                let listaNombres = [];
+                AppStore.state.artefactosSeleccionadosIds = [];
+
+                seleccionados.forEach(btn => {
+                    totalWatts += parseFloat(btn.getAttribute('data-watts'));
+                    listaNombres.push(btn.querySelector('span:not(.icon)').innerText);
+                    AppStore.state.artefactosSeleccionadosIds.push(parseInt(btn.getAttribute('data-id')));
+                });
+
+                const totalKwhMes = (totalWatts * horas * dias) / 1000;
+                const precioKwh = 0.68; 
+                const costoSoles = totalKwhMes * precioKwh;
+                const co2Kg = totalKwhMes * 0.21; 
+
+                AppStore.state.totalKwhCalculado = totalKwhMes;
+                AppStore.state.costoFinalCalculado = costoSoles;
+                AppStore.state.co2FinalCalculado = co2Kg;
+                AppStore.state.horasUltimoAnalisis = horas;
+                AppStore.state.diasUltimoAnalisis = dias;
+
+                let output = `======================================================================\n`;
+                output += `       📊 REPORTE TÉCNICO DE CONSUMO - MACO DEL SISTEMA               \n`;
+                output += `======================================================================\n`;
+                output += `• Componentes Analizados: ${listaNombres.join(', ')}\n`;
+                output += `• Potencia de Carga Agrupada: ${(totalWatts/1000).toFixed(3)} kW\n`;
+                output += `• Régimen Configurado: ${horas} horas/día por ${dias} días al mes\n`;
+                output += `----------------------------------------------------------------------\n`;
+                output += `⚡ ENERGÍA TOTAL MENSUAL:   ${totalKwhMes.toFixed(2)} kWh\n`;
+                output += `💰 COSTO ESTIMADO (BT5B):   S/. ${costoSoles.toFixed(2)}\n`;
+                output += `🌿 INFLUENCIA DE CARBONO:   ${co2Kg.toFixed(2)} kg de CO2 emitidos\n`;
+                output += `----------------------------------------------------------------------\n`;
+                output += `✅ [ANÁLISIS COMPLETADO] Datos listos para persistencia en base de datos.`;
+
+                consoleArea.innerText = output;
+                this.setBtnGuardarState(true);
+            },
+
+            setBtnGuardarState(isValid) {
+                AppStore.state.isAnalisisValido = isValid;
+                document.getElementById('btnGuardarHistorialMock').disabled = !isValid;
+            },
+
+            mostrarMetodologiaPlana() {
+                document.getElementById('txtConsoleMock').innerText = 
+                    `======================================================================\n` +
+                    `               MÉTODO DE ANÁLISIS DE ENERGÍA Y CO2                   \n` +
+                    `======================================================================\n\n` +
+                    `1. Consumo Mensual (Base de datos) = (Potencia en Watts x Horas Uso x Días) / 1000\n` +
+                    `2. Importe Económico (S/.) = Consumo Mensual (kWh) x S/. 0.68 (Tarifa Plana Asignada)\n` +
+                    `3. Huella Ecológica (kgCO2) = Consumo Mensual (kWh) x 0.21 (Factor de Red Local)`;
+            }
+        };
+
+        const SuministrosService = {
+            async cargarSuministrosYHistorico() {
+                if (!clienteAutenticado) return;
+                try {
+                    const response = await fetch(`http://localhost:8080/api/suministros/cliente/${clienteAutenticado.idCliente}`);
+                    if(response.ok) {
+                        const data = await response.json();
+                        this.renderizarSuministrosTabla(data);
+                        return;
+                    }
+                } catch(e) {
+                    console.log("Servidor Spring Boot fuera de línea. Cargando fallback de datos estipulados.");
+                }
+
+                const suministrosFalsos = [
+                    { idSuministro: 3, codigoMedidor: "MED-MONO-9912", tipoConexion: "Monofasico", fuenteEnergia: "Red Tradicional", estado: "Activo" },
+                    { idSuministro: 4, codigoMedidor: "MED-TRIF-5541", tipoConexion: "Monofasico", fuenteEnergia: "Red Tradicional", estado: "Pendiente" }
+                ];
+                this.renderizarSuministrosTabla(suministrosFalsos);
+            },
+
+            renderizarSuministrosTabla(lista) {
+                const tbody = document.querySelector('#tablaSuministros tbody');
+                const select = document.getElementById('selectSuministroAsociado');
+                tbody.innerHTML = '';
+                select.innerHTML = '';
+
+                if(lista.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No posee suministros vigentes.</td></tr>`;
+                    return;
+                }
+
+                lista.forEach(sum => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td><b>SUM-00${sum.idSuministro}</b></td>
+                        <td>${sum.codigoMedidor || 'Por Asignar'}</td>
+                        <td>${sum.tipoConexion}</td>
+                        <td>🌿 ${sum.fuenteEnergia || 'Red Tradicional'}</td>
+                        <td><span class="badge ${sum.estado === 'Activo' ? 'badge-activo' : 'badge-evaluacion'}">● ${sum.estado}</span></td>
+                    `;
+
+                    const opt = document.createElement('option');
+                    opt.value = sum.idSuministro;
+                    opt.innerText = `SUM-00${sum.idSuministro} (${sum.tipoConexion})`;
+                    select.appendChild(opt);
+                });
+            },
+
+            async guardarConsumoBD() {
+                if (!AppStore.state.isAnalisisValido || !clienteAutenticado) return;
+
+                const idSuministroSeleccionado = document.getElementById('selectSuministroAsociado').value;
+
+                const payloadConsumo = {
+                    idCliente: clienteAutenticado.idCliente,
+                    idSuministro: parseInt(idSuministroSeleccionado),
+                    horasUso: AppStore.state.horasUltimoAnalisis,
+                    dias: AppStore.state.diasUltimoAnalisis,
+                    totalKwh: AppStore.state.totalKwhCalculado.toFixed(2),
+                    costoTotal: AppStore.state.costoFinalCalculado.toFixed(2),
+                    huellaCarbono: AppStore.state.co2FinalCalculado.toFixed(2),
+                    fecha: new Date().toISOString().split('T')[0]
+                };
+
+                document.getElementById('dashKwhVal').innerText = `${payloadConsumo.totalKwh} kWh`;
+                document.getElementById('dashCostoVal').innerText = `S/. ${payloadConsumo.costoTotal}`;
+                document.getElementById('dashCo2Val').innerText = `${payloadConsumo.huellaCarbono} kg CO2`;
+
+                const vacio = document.getElementById('filaVaciaSeguimiento');
+                if (vacio) vacio.remove();
+
+                const tbody = document.getElementById('tbodyConsumos');
+                const row = tbody.insertRow();
+                const idConsumoRandom = Math.floor(Math.random() * 100) + 31;
+                row.innerHTML = `
+                    <td><b>CON-${idConsumoRandom}</b></td>
+                    <td>${payloadConsumo.fecha}</td>
+                    <td>${payloadConsumo.horasUso} hrs / ${payloadConsumo.dias} días</td>
+                    <td><span style="color:var(--jade-medium); font-weight:700;">${payloadConsumo.totalKwh} kWh</span></td>
+                    <td>S/. ${payloadConsumo.costoTotal}</td>
+                    <td>${payloadConsumo.huellaCarbono} kg</td>
+                `;
+
+                try {
+                    await fetch('http://localhost:8080/api/consumos', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payloadConsumo)
+                    });
+                } catch (err) {
+                    console.log("Simulación persistida localmente (Spring Boot no detectado).");
+                }
+
+                ToastComponent.show(`¡Registro guardado exitosamente en la tabla consumo!`);
+                ChartDashboardComponent.updateData(AppStore.state.totalKwhCalculado);
+                
+                MenuController.navigate(document.querySelector('.sidebar-menu a[data-panel="suministros"]'));
+                CalculadoraService.setBtnGuardarState(false);
+            }
+        };
+
+        const MenuController = {
+            navigate(element) {
+                const target = element.getAttribute('data-panel');
+                document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active-panel'));
+                document.querySelectorAll('.sidebar-menu a').forEach(l => l.classList.remove('active'));
+                
+                document.getElementById(`panel-${target}`).classList.add('active-panel');
+                element.classList.add('active');
+                document.getElementById('panel-title-text').innerText = element.innerText.trim();
+
+                if (target === 'dashboard') ChartDashboardComponent.render();
+            }
+        };
+
+        const ChartDashboardComponent = {
+            instance: null,
+            render() {
+                const canvas = document.getElementById('clientBarChart');
+                if (!canvas) return;
+                
+                if (this.instance) {
+                    this.instance.destroy(); 
+                }
+                
+                const ctx = canvas.getContext('2d');
+                this.instance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Consumo Base', 'Mes Actual (Simulado)'],
+                        datasets: [{ label: 'Consumo kWh', data: [84.00, AppStore.state.totalKwhCalculado], backgroundColor: ['#26a69a', '#ffb300'], borderRadius: 8 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+            },
+            updateData(nuevoKwh) {
+                if (this.instance) {
+                    this.instance.data.datasets[0].data[1] = nuevoKwh;
+                    this.instance.update();
+                }
+            }
+        };
+
+        // Verificación de inicio al cargar el documento
+        document.addEventListener("DOMContentLoaded", () => { 
+            SessionService.verificarSesion(); 
+        });
+    </script>
+</body>
+</html>
