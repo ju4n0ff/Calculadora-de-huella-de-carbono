@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-CalculadoraApplication<calculadora>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.simulador.calculadora.CalculadoraApplication",
+            "projectName": "calculadora",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

@@ -7,25 +7,37 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const raw = localStorage.getItem('usuarioSesion')
-    if (raw) {
-      try {
-        setUser(JSON.parse(raw))
-      } catch {
-        localStorage.removeItem('usuarioSesion')
+    try {
+      const raw = localStorage.getItem('usuarioSesion')
+      if (raw) {
+        try {
+          setUser(JSON.parse(raw))
+        } catch {
+          localStorage.removeItem('usuarioSesion')
+        }
       }
+    } catch {
+      // localStorage no disponible (modo privado, etc.)
     }
     setLoading(false)
   }, [])
 
   const login = (tipo, datos) => {
-    const session = { tipo, datos }
-    localStorage.setItem('usuarioSesion', JSON.stringify(session))
-    setUser(session)
+    try {
+      const session = { tipo, datos }
+      localStorage.setItem('usuarioSesion', JSON.stringify(session))
+      setUser(session)
+    } catch {
+      setUser({ tipo, datos })
+    }
   }
 
   const logout = () => {
-    localStorage.removeItem('usuarioSesion')
+    try {
+      localStorage.removeItem('usuarioSesion')
+    } catch {
+      // ignore
+    }
     setUser(null)
   }
 

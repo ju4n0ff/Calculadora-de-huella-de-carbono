@@ -35,9 +35,9 @@ export default function Login() {
     <div className="login-body">
       <div className="login-container">
         <header className="login-header">
-          <span className="logo-eco">🌱</span>
-          <h2>Inicio de Sesión</h2>
-          <p>Selecciona tipo de ingreso</p>
+          <div className="brand-icon">⚡</div>
+          <h2>PowerCalc</h2>
+          <p>Gestión Energética Inteligente</p>
         </header>
 
         <div className="role-selector">
@@ -56,7 +56,7 @@ export default function Login() {
         <form onSubmit={handleSubmit}>
           {role === 'CLIENTE' ? (
             <div className="form-group">
-              <label htmlFor="clienteId">ID Cliente:</label>
+              <label htmlFor="clienteId">Código de Cliente:</label>
               <input id="clienteId" type="number" className="form-control" placeholder="Ej. 41206" value={clienteId} onChange={(e) => setClienteId(e.target.value)} required />
             </div>
           ) : (
@@ -67,7 +67,7 @@ export default function Login() {
               </div>
               <div className="form-group">
                 <label htmlFor="adminPass">Clave:</label>
-                <input id="adminPass" type="password" className="form-control" placeholder="••••••••" value={adminPass} onChange={(e) => setAdminPass(e.target.value)} required />
+                <input id="adminPass" type="password" className="form-control" placeholder="Ingrese su contraseña" value={adminPass} onChange={(e) => setAdminPass(e.target.value)} required />
               </div>
             </>
           )}

@@ -3,7 +3,7 @@ package com.simulador.calculadora.controller;
 import com.simulador.calculadora.model.Cliente;
 import com.simulador.calculadora.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -25,5 +25,30 @@ public class ClienteController {
         return clienteService.buscarPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<Cliente> crear(@RequestBody Cliente cliente) {
+        Cliente nuevo = clienteService.guardar(cliente);
+        return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Cliente> actualizar(@PathVariable Integer id, @RequestBody Cliente cliente) {
+        try {
+            return ResponseEntity.ok(clienteService.actualizar(id, cliente));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+        try {
+            clienteService.eliminar(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

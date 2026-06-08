@@ -14,6 +14,11 @@ public class SuministroServiceImpl implements SuministroService {
     private SuministroRepository suministroRepository;
 
     @Override
+    public List<Suministro> listarTodos() {
+        return suministroRepository.findAll();
+    }
+
+    @Override
     public List<Suministro> obtenerPorClienteId(Integer idCliente) {
         return suministroRepository.findByClienteIdCliente(idCliente);
     }
@@ -21,5 +26,15 @@ public class SuministroServiceImpl implements SuministroService {
     @Override
     public Suministro guardar(Suministro suministro) {
         return suministroRepository.save(suministro);
+    }
+
+    @Override
+    public Suministro actualizarEstado(Integer id, String estado) {
+        return suministroRepository.findById(id)
+                .map(s -> {
+                    s.setEstado(estado);
+                    return suministroRepository.save(s);
+                })
+                .orElseThrow(() -> new RuntimeException("Suministro no encontrado"));
     }
 }

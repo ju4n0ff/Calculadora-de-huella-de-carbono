@@ -40,4 +40,11 @@ public class ClienteService {
                 })
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
     }
+
+    public void eliminar(Integer idCliente) {
+        if (!clienteRepository.existsById(idCliente)) {
+            throw new RuntimeException("Cliente no encontrado");
+        }
+        clienteRepository.deleteById(idCliente);
+    }
 }
