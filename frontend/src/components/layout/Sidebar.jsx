@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useAuth } from '../../contexts/AuthContext'
 import ConfirmModal from '../ui/ConfirmModal'
 
-export default function Sidebar({ panels, activePanel, onPanelChange, brandText = 'PowerCalc', brandSub = 'Gestión Energética' }) {
+export default function Sidebar({ panels, activePanel, onPanelChange, brandText = 'EcoHuella', brandSub = 'Gestión de Carbono' }) {
   const { logout } = useAuth()
   const [showLogoutModal, setShowLogoutModal] = useState(false)
 

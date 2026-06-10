@@ -150,7 +150,7 @@ export default function ClientDashboard() {
         title={panels.find((p) => p.id === activePanel)?.label}
         userName={`Hola, ${clienteNombre}`}
         avatarIcon="⚡"
-        brandText="PowerCalc"
+        brandText="EcoHuella"
         brandSub="Cliente"
       >
         {activePanel === 'dashboard' && (

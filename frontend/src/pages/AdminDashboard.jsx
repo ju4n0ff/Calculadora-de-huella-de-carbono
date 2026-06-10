@@ -134,10 +134,10 @@ export default function AdminDashboard() {
         activePanel={activePanel}
         onPanelChange={setActivePanel}
         title={panels.find((p) => p.id === activePanel)?.label}
-        userName={`Admin: ${adminName}`}
+        userName={adminName}
         avatarIcon="💻"
-        brandText="PowerCalc Admin"
-        brandSub="Panel de Control"
+        brandText="EcoHuella"
+        brandSub="Gestión de Carbono"
       >
         <ErrorBanner message={error} onRetry={() => loadData(true)} />
 
