@@ -45,7 +45,7 @@ export default function CrudClientes({ addToast }) {
       nombre: cliente.nombre || '',
       dni: cliente.dni || '',
       direccion: cliente.direccion || '',
-      idTarifa: cliente.idTarifa ?? '',
+      idTarifa: cliente.tarifa?.idTarifa ?? '',
     })
   }
 
@@ -67,7 +67,7 @@ export default function CrudClientes({ addToast }) {
         nombre: form.nombre,
         dni: form.dni,
         direccion: form.direccion,
-        idTarifa: form.idTarifa ? Number(form.idTarifa) : null,
+        tarifa: form.idTarifa ? { idTarifa: Number(form.idTarifa) } : null,
       })
       addToast('Cliente actualizado correctamente.')
       cancelEdit()
@@ -87,7 +87,7 @@ export default function CrudClientes({ addToast }) {
         nombre: form.nombre,
         dni: form.dni,
         direccion: form.direccion,
-        idTarifa: form.idTarifa ? Number(form.idTarifa) : null,
+        tarifa: form.idTarifa ? { idTarifa: Number(form.idTarifa) } : null,
       })
       addToast('Cliente creado correctamente.')
       setCreating(false)
@@ -152,7 +152,7 @@ export default function CrudClientes({ addToast }) {
               </option>
             ))}
           </select>
-        ) : (c.idTarifa ? (tarifas.find(t => t.idTarifa === c.idTarifa)?.nombre || '—') : '—'),
+        ) : (c.tarifa?.nombre || '—'),
         <div key="acc" className="action-btns">
           {isEditing ? (
             <>

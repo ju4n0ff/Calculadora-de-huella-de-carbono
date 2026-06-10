@@ -43,6 +43,9 @@ export default function ClientDashboard() {
 
   const clienteId = user?.datos?.idCliente
   const clienteNombre = user?.datos?.nombre || 'Cliente'
+  const tarifaCliente = user?.datos?.tarifa
+  const precioKwh = tarifaCliente?.precioKwh ?? 0.68
+  const nombreTarifa = tarifaCliente?.nombre || 'BT5B'
 
   const addToast = useCallback((msg) => {
     const id = Date.now()
@@ -192,6 +195,8 @@ export default function ClientDashboard() {
               onGuardar={guardarConsumo}
               saving={saving}
               loadingSum={loadingSum}
+              precioKwh={precioKwh}
+              nombreTarifa={nombreTarifa}
             />
           </div>
         )}

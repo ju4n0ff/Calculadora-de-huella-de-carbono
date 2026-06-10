@@ -1,7 +1,9 @@
 package com.simulador.calculadora.service;
 
 import com.simulador.calculadora.model.Cliente;
+import com.simulador.calculadora.model.Tarifa;
 import com.simulador.calculadora.repository.ClienteRepository;
+import com.simulador.calculadora.repository.TarifaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,9 @@ class ClienteServiceTest {
     @Mock
     private ClienteRepository clienteRepository;
 
+    @Mock
+    private TarifaRepository tarifaRepository;
+
     @InjectMocks
     private ClienteService clienteService;
 
@@ -28,7 +33,7 @@ class ClienteServiceTest {
 
     @BeforeEach
     void setUp() {
-        cliente = new Cliente(1, "Juan Pérez", "12345678", "Av. Principal 123", 1);
+        cliente = new Cliente(1, "Juan Pérez", "12345678", "Av. Principal 123", null);
     }
 
     @Test

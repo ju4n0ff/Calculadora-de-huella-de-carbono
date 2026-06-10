@@ -37,7 +37,7 @@ class ReclamoServiceTest {
 
     @BeforeEach
     void setUp() {
-        cliente = new Cliente(1, "Juan Pérez", "12345678", "Av. Principal 123", 1);
+        cliente = new Cliente(1, "Juan Pérez", "12345678", "Av. Principal 123", null);
         reclamo = new Reclamo();
         reclamo.setIdReclamo(1);
         reclamo.setCliente(cliente);

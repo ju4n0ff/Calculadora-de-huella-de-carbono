@@ -1,5 +1,6 @@
 package com.simulador.calculadora.service.Impl;
 
+import com.simulador.calculadora.exception.ResourceNotFoundException;
 import com.simulador.calculadora.model.Suministro;
 import com.simulador.calculadora.repository.SuministroRepository;
 import com.simulador.calculadora.service.SuministroService;
@@ -52,6 +53,6 @@ public class SuministroServiceImpl implements SuministroService {
                     s.setEstado(estado);
                     return suministroRepository.save(s);
                 })
-                .orElseThrow(() -> new RuntimeException("Suministro no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Suministro", id));
     }
 }

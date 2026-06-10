@@ -1,5 +1,6 @@
 package com.simulador.calculadora.service.Impl;
 
+import com.simulador.calculadora.exception.ResourceNotFoundException;
 import com.simulador.calculadora.model.Administrador;
 import com.simulador.calculadora.model.Reclamo;
 import com.simulador.calculadora.repository.AdministradorRepository;
@@ -72,6 +73,6 @@ public class ReclamoServiceImpl implements ReclamoService {
                     r.setAdministrador(admin);
                     return reclamoRepository.save(r);
                 })
-                .orElseThrow(() -> new RuntimeException("Reclamo no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Reclamo", id));
     }
 }

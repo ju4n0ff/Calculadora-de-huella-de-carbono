@@ -1,7 +1,10 @@
 package com.simulador.calculadora.service;
 
+import com.simulador.calculadora.exception.ResourceNotFoundException;
 import com.simulador.calculadora.model.Cliente;
+import com.simulador.calculadora.model.Tarifa;
 import com.simulador.calculadora.repository.ClienteRepository;
+import com.simulador.calculadora.repository.TarifaRepository;
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -20,6 +23,9 @@ public class ClienteService {
 
     @Autowired
     private ClienteRepository clienteRepository;
+
+    @Autowired
+    private TarifaRepository tarifaRepository;
 
     /** Retorna todos los clientes registrados. */
     public List<Cliente> listarTodos() {
@@ -41,10 +47,25 @@ public class ClienteService {
         return clienteRepository.findByDni(dni);
     }
 
+    /** Resuelve la referencia a Tarifa si viene solo con idTarifa. */
+    private void resolverTarifa(Cliente cliente) {
+        if (cliente.getTarifa() != null && cliente.getTarifa().getIdTarifa() != null) {
+            Integer id = cliente.getTarifa().getIdTarifa();
+            if (id > 0) {
+                Tarifa tarifa = tarifaRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Tarifa no encontrada con ID: " + id));
+                cliente.setTarifa(tarifa);
+            } else {
+                cliente.setTarifa(null);
+            }
+        }
+    }
+
     /** Guarda un nuevo cliente. */
     public Cliente guardar(Cliente cliente) {
         Preconditions.checkNotNull(cliente, "El cliente no puede ser nulo");
         Preconditions.checkArgument(StringUtils.isNotBlank(cliente.getNombre()), "El nombre del cliente es obligatorio");
+        resolverTarifa(cliente);
         log.info("Guardando cliente: {}", cliente.getNombre());
         return clienteRepository.save(cliente);
     }
@@ -54,21 +75,22 @@ public class ClienteService {
         Preconditions.checkNotNull(idCliente, "El ID del cliente no puede ser nulo");
         Preconditions.checkNotNull(datosActualizados, "Los datos actualizados no pueden ser nulos");
         log.info("Actualizando cliente ID: {}", idCliente);
+        resolverTarifa(datosActualizados);
         return clienteRepository.findById(idCliente)
                 .map(cliente -> {
                     cliente.setNombre(datosActualizados.getNombre());
                     cliente.setDireccion(datosActualizados.getDireccion());
-                    cliente.setIdTarifa(datosActualizados.getIdTarifa());
+                    cliente.setTarifa(datosActualizados.getTarifa());
                     return clienteRepository.save(cliente);
                 })
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + idCliente));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente", idCliente));
     }
 
     /** Elimina un cliente por su ID. */
     public void eliminar(Integer idCliente) {
         Preconditions.checkNotNull(idCliente, "El ID del cliente no puede ser nulo");
         if (!clienteRepository.existsById(idCliente)) {
-            throw new RuntimeException("Cliente no encontrado con ID: " + idCliente);
+            throw new ResourceNotFoundException("Cliente", idCliente);
         }
         log.warn("Eliminando cliente ID: {}", idCliente);
         clienteRepository.deleteById(idCliente);

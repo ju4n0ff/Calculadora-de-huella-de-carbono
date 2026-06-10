@@ -2,6 +2,7 @@ package com.simulador.calculadora.service;
 
 import com.simulador.calculadora.model.Cliente;
 import com.simulador.calculadora.model.Consumo;
+import com.simulador.calculadora.model.Tarifa;
 import com.simulador.calculadora.model.Suministro;
 import com.simulador.calculadora.repository.ConsumoRepository;
 import com.simulador.calculadora.service.Impl.ConsumoServiceImpl;
@@ -31,7 +32,7 @@ class ConsumoServiceTest {
 
     @BeforeEach
     void setUp() {
-        Cliente cliente = new Cliente(1, "Juan Pérez", "12345678", "Av. Principal 123", 1);
+        Cliente cliente = new Cliente(1, "Juan Pérez", "12345678", "Av. Principal 123", null);
         Suministro suministro = new Suministro();
         suministro.setIdSuministro(1);
 

@@ -6,7 +6,7 @@ import PanelBlock from '../ui/PanelBlock'
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, PieController, ArcElement, Tooltip, Legend)
 
-export default function OverviewPanel({ simulaciones, consumos, clientes, loading }) {
+export default function OverviewPanel({ simulaciones, consumos, clientes, suministros, reclamos, loading }) {
   const chartBarRef = useRef(null)
   const chartPieRef = useRef(null)
   const chartBarInst = useRef(null)
@@ -18,6 +18,12 @@ export default function OverviewPanel({ simulaciones, consumos, clientes, loadin
   const totalSoles = [...simulaciones, ...consumos].reduce(
     (s, c) => s + (c.costoSoles ?? c.costoTotal ?? 0), 0
   )
+  const totalCo2 = [...simulaciones, ...consumos].reduce(
+    (s, c) => s + (c.huellaCarbono ?? 0), 0
+  )
+  const pendientes = suministros.filter((s) => s.estado === 'pendiente').length
+  const reclamosAbiertos = reclamos.filter((r) => r.estado === 'pendiente' || r.estado === 'en_proceso').length
+  const promedioKwh = clientes.length > 0 ? (totalKwh / clientes.length) : 0
 
   useEffect(() => {
     if (loading || !chartBarRef.current) return
@@ -84,22 +90,42 @@ export default function OverviewPanel({ simulaciones, consumos, clientes, loadin
       <div className="overview-grid">
         <MetricCard
           icon="⚡"
-          title="Energía Monitoreada Total"
+          title="Energía Total"
           value={`${totalKwh.toFixed(1)} kWh`}
           footer="De todas las simulaciones y consumos"
         />
         <MetricCard
           icon="💰"
-          title="Recaudación por Consumos"
+          title="Recaudación Total"
           value={`S/. ${totalSoles.toFixed(2)}`}
-          footer="Basado en tarifa BT5B"
+          footer="Basado en tarifa asignada"
           alert
         />
         <MetricCard
+          icon="🌿"
+          title="Huella de CO₂ Total"
+          value={`${totalCo2.toFixed(1)} kg`}
+          footer="Impacto ambiental acumulado"
+        />
+        <MetricCard
           icon="👥"
-          title="Clientes Activos"
+          title="Clientes Registrados"
           value={clientes.length}
-          footer="Registrados en el sistema"
+          footer={`Promedio ${promedioKwh.toFixed(1)} kWh/cliente`}
+        />
+        <MetricCard
+          icon="🔌"
+          title="Suministros Pendientes"
+          value={pendientes}
+          footer={`${suministros.length} totales`}
+          alert={pendientes > 0}
+        />
+        <MetricCard
+          icon="📋"
+          title="Reclamos Abiertos"
+          value={reclamosAbiertos}
+          footer={`${reclamos.length} totales`}
+          alert={reclamosAbiertos > 0}
         />
       </div>
 
@@ -119,5 +145,7 @@ OverviewPanel.propTypes = {
   simulaciones: PropTypes.array.isRequired,
   consumos: PropTypes.array.isRequired,
   clientes: PropTypes.array.isRequired,
+  suministros: PropTypes.array,
+  reclamos: PropTypes.array,
   loading: PropTypes.bool,
 }

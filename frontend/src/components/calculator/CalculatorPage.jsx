@@ -1,14 +1,41 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import ApplianceGrid, { artefactos } from './ApplianceGrid'
+import ApplianceGrid from './ApplianceGrid'
 import ConfigPanel from './ConfigPanel'
 import ResultsPanel from './ResultsPanel'
 import TerminalOutput from './TerminalOutput'
 import SupplySelector from './SupplySelector'
 import PanelBlock from '../ui/PanelBlock'
 import ConfirmModal from '../ui/ConfirmModal'
+import { artefactoApi } from '../../api'
 
-const PRECIO_KWH = 0.68
+const FALLBACK_ARTEFACTOS = [
+  { id: 1, nombre: 'Foco LED', watts: 10, icon: '💡' },
+  { id: 2, nombre: 'Televisor', watts: 120, icon: '📺' },
+  { id: 3, nombre: 'Refrigeradora', watts: 300, icon: '❄️' },
+  { id: 4, nombre: 'Laptop', watts: 65, icon: '💻' },
+  { id: 5, nombre: 'Microondas', watts: 1000, icon: '🍿' },
+  { id: 6, nombre: 'Lavadora', watts: 500, icon: '🧺' },
+  { id: 7, nombre: 'Plancha', watts: 1200, icon: '👔' },
+  { id: 8, nombre: 'Secadora', watts: 1800, icon: '💨' },
+  { id: 9, nombre: 'Ducha eléctrica', watts: 4500, icon: '🚿' },
+  { id: 10, nombre: 'Ventilador', watts: 80, icon: '🌀' },
+  { id: 11, nombre: 'Aire acondicionado', watts: 1500, icon: '🥶' },
+  { id: 12, nombre: 'Horno eléctrico', watts: 2000, icon: '🥧' },
+  { id: 13, nombre: 'Cafetera', watts: 900, icon: '☕' },
+  { id: 14, nombre: 'Licuadora', watts: 350, icon: '🥤' },
+  { id: 15, nombre: 'Router', watts: 30, icon: '🌐' },
+  { id: 16, nombre: 'Consola', watts: 160, icon: '🎮' },
+  { id: 17, nombre: 'Aspiradora', watts: 1400, icon: '🧹' },
+  { id: 18, nombre: 'Bomba de agua', watts: 750, icon: '🚰' },
+  { id: 19, nombre: 'Cargador celular', watts: 10, icon: '🔌' },
+  { id: 20, nombre: 'PC de escritorio', watts: 250, icon: '🖥️' },
+]
+
+function mapArtefacto(a) {
+  return { id: a.id, nombre: a.nombre, watts: a.wattsBase, icon: '🔌' }
+}
+
 const FACTOR_CO2 = 0.21
 
 const METODOLOGIA_TEXT =
@@ -16,10 +43,11 @@ const METODOLOGIA_TEXT =
   '               MÉTODO DE ANÁLISIS DE ENERGÍA Y CO2                   \n' +
   '======================================================================\n\n' +
   '1. Consumo Mensual = (Potencia en Watts x Horas Uso x Días) / 1000\n' +
-  '2. Importe Económico (S/.) = Consumo Mensual (kWh) x S/. 0.68\n' +
+  '2. Importe Económico (S/.) = Consumo Mensual (kWh) x Tarifa\n' +
   '3. Huella Ecológica (kgCO2) = Consumo Mensual (kWh) x 0.21'
 
-export default function CalculatorPage({ suministros, onGuardar, saving, suministroId, onSuministroChange, loadingSum }) {
+export default function CalculatorPage({ suministros, onGuardar, saving, suministroId, onSuministroChange, loadingSum, precioKwh = 0.68, nombreTarifa = 'BT5B' }) {
+  const [artefactos, setArtefactos] = useState(FALLBACK_ARTEFACTOS)
   const [selected, setSelected] = useState(new Set())
   const [horas, setHoras] = useState(4)
   const [dias, setDias] = useState(30)
@@ -30,6 +58,16 @@ export default function CalculatorPage({ suministros, onGuardar, saving, suminis
   const [co2Kg, setCo2Kg] = useState(0)
   const [showSaveModal, setShowSaveModal] = useState(false)
   const [pendingSave, setPendingSave] = useState(null)
+
+  useEffect(() => {
+    artefactoApi.listar()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setArtefactos(data.map(mapArtefacto))
+        }
+      })
+      .catch(() => { /* usar fallback */ })
+  }, [])
 
   const toggleAppliance = (id) => {
     setSelected((prev) => {
@@ -59,7 +97,7 @@ export default function CalculatorPage({ suministros, onGuardar, saving, suminis
     const seleccionados = artefactos.filter((a) => selected.has(a.id))
     const totalWatts = seleccionados.reduce((sum, a) => sum + a.watts, 0)
     const kwh = (totalWatts * horas * dias) / 1000
-    const soles = kwh * PRECIO_KWH
+    const soles = kwh * precioKwh
     const co2 = kwh * FACTOR_CO2
 
     setTotalKwh(kwh)
@@ -75,9 +113,10 @@ export default function CalculatorPage({ suministros, onGuardar, saving, suminis
       `• Componentes Analizados: ${listaNombres.join(', ')}\n` +
       `• Potencia de Carga Agrupada: ${(totalWatts / 1000).toFixed(3)} kW\n` +
       `• Régimen Configurado: ${horas} horas/día por ${dias} días al mes\n` +
+      `• Tarifa Aplicada: ${nombreTarifa} (S/. ${precioKwh}/kWh)\n` +
       `----------------------------------------------------------------------\n` +
       `⚡ ENERGÍA TOTAL MENSUAL:   ${kwh.toFixed(2)} kWh\n` +
-      `💰 COSTO ESTIMADO (BT5B):   S/. ${soles.toFixed(2)}\n` +
+      `💰 COSTO ESTIMADO (${nombreTarifa}):   S/. ${soles.toFixed(2)}\n` +
       `🌿 INFLUENCIA DE CARBONO:   ${co2.toFixed(2)} kg de CO2 emitidos\n` +
       `----------------------------------------------------------------------\n` +
       `✅ [ANÁLISIS COMPLETADO] Datos listos para persistencia en base de datos.`
@@ -87,7 +126,7 @@ export default function CalculatorPage({ suministros, onGuardar, saving, suminis
   return (
     <div className="calculator-layout">
       <PanelBlock title="⚡ Modelador Técnico de Carga y Consumo">
-        <ApplianceGrid selected={selected} onToggle={toggleAppliance} />
+        <ApplianceGrid artefactos={artefactos} selected={selected} onToggle={toggleAppliance} />
         <TerminalOutput text={terminal} />
       </PanelBlock>
 
@@ -145,4 +184,6 @@ CalculatorPage.propTypes = {
   suministroId: PropTypes.string.isRequired,
   onSuministroChange: PropTypes.func.isRequired,
   loadingSum: PropTypes.bool,
+  precioKwh: PropTypes.number,
+  nombreTarifa: PropTypes.string,
 }

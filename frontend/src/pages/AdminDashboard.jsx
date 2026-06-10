@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { clienteApi, consumoApi, simulacionApi } from '../api'
+import { clienteApi, consumoApi, simulacionApi, suministroApi, reclamoApi } from '../api'
 import AppLayout from '../components/layout/AppLayout'
 import OverviewPanel from '../components/admin/OverviewPanel'
 import ClientList from '../components/admin/ClientList'
@@ -31,6 +31,8 @@ export default function AdminDashboard() {
   const [clientes, setClientes] = useState([])
   const [consumos, setConsumos] = useState([])
   const [simulaciones, setSimulaciones] = useState([])
+  const [suministros, setSuministros] = useState([])
+  const [reclamos, setReclamos] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [refreshing, setRefreshing] = useState(false)
@@ -48,14 +50,18 @@ export default function AdminDashboard() {
     setError('')
 
     try {
-      const [c, con, sim] = await Promise.all([
+      const [c, con, sim, sum, rec] = await Promise.all([
         clienteApi.listar(),
         consumoApi.listar().catch(() => []),
         simulacionApi.listar().catch(() => []),
+        suministroApi.listarTodos().catch(() => []),
+        reclamoApi.listar().catch(() => []),
       ])
       setClientes(c)
       setConsumos(con)
       setSimulaciones(sim)
+      setSuministros(sum)
+      setReclamos(rec)
       if (showRefresh) addToast('Datos actualizados correctamente.')
     } catch (err) {
       setError('Error al cargar datos del servidor. Verifica que el backend esté corriendo.')
@@ -123,6 +129,8 @@ export default function AdminDashboard() {
                   simulaciones={simulaciones}
                   consumos={consumos}
                   clientes={clientes}
+                  suministros={suministros}
+                  reclamos={reclamos}
                   loading={loading || refreshing}
                 />
                 <div className="panel-layout full-width" style={{ marginTop: 24 }}>

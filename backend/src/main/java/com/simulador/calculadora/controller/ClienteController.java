@@ -34,20 +34,12 @@ public class ClienteController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Cliente> actualizar(@PathVariable Integer id, @RequestBody Cliente cliente) {
-        try {
-            return ResponseEntity.ok(clienteService.actualizar(id, cliente));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(clienteService.actualizar(id, cliente));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
-        try {
-            clienteService.eliminar(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        clienteService.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }
