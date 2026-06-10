@@ -32,8 +32,17 @@ const FALLBACK_ARTEFACTOS = [
   { id: 20, nombre: 'PC de escritorio', watts: 250, icon: '🖥️' },
 ]
 
+const ICONOS = {
+  'Foco LED': '💡', 'Televisor': '📺', 'Refrigeradora': '❄️', 'Laptop': '💻',
+  'Microondas': '🍿', 'Lavadora': '🧺', 'Plancha': '👔', 'Secadora': '💨',
+  'Ducha eléctrica': '🚿', 'Ventilador': '🌀', 'Aire acondicionado': '🥶',
+  'Horno eléctrico': '🥧', 'Cafetera': '☕', 'Licuadora': '🥤', 'Router': '🌐',
+  'Consola': '🎮', 'Aspiradora': '🧹', 'Bomba de agua': '🚰',
+  'Cargador celular': '🔌', 'PC de escritorio': '🖥️',
+}
+
 function mapArtefacto(a) {
-  return { id: a.id, nombre: a.nombre, watts: a.wattsBase, icon: '🔌' }
+  return { id: a.id, nombre: a.nombre, watts: a.wattsBase, icon: ICONOS[a.nombre] || '🔌' }
 }
 
 const FACTOR_CO2 = 0.21

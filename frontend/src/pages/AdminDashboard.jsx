@@ -77,6 +77,12 @@ export default function AdminDashboard() {
     }
   }, [activePanel, loadData])
 
+  const [expandedArtefactos, setExpandedArtefactos] = useState({})
+
+  const toggleArtefactos = (id) => {
+    setExpandedArtefactos((prev) => ({ ...prev, [id]: !prev[id] }))
+  }
+
   const getClienteName = (idCliente) => {
     const c = clientes.find((cl) => cl.idCliente === idCliente)
     return c ? c.nombre : `Cliente ID: ${idCliente}`
@@ -84,17 +90,42 @@ export default function AdminDashboard() {
 
   const adminName = user?.datos?.nombre || user?.datos?.usuario || 'Admin'
 
-  const consumosRows = consumos.slice(0, 10).map((c) => ({
-    key: c.idConsumo,
-    cells: [
-      <b key="id">CON-{c.idConsumo}</b>,
-      getClienteName(c.cliente?.idCliente),
-      <span key="kwh" style={{ color: 'var(--ld-blue)', fontWeight: 700 }}>{c.totalKwh.toFixed(2)} kWh</span>,
-      `S/. ${c.costoTotal.toFixed(2)}`,
-      `${c.huellaCarbono.toFixed(2)} kg`,
-      c.fecha || '—',
-    ],
-  }))
+  const consumosRows = consumos.slice(0, 10).map((c) => {
+    let artefactos = []
+    try { artefactos = c.detalles ? JSON.parse(c.detalles) : [] } catch { artefactos = [] }
+    const totalW = artefactos.reduce((s, a) => s + a.watts, 0)
+    const expanded = expandedArtefactos[c.idConsumo]
+    return {
+      key: c.idConsumo,
+      cells: [
+        <b key="id">CON-{c.idConsumo}</b>,
+        getClienteName(c.cliente?.idCliente),
+        <span key="kwh" style={{ color: 'var(--ld-blue)', fontWeight: 700 }}>{c.totalKwh.toFixed(2)} kWh</span>,
+        `S/. ${c.costoTotal.toFixed(2)}`,
+        `${c.huellaCarbono.toFixed(2)} kg`,
+        c.fecha || '—',
+        <div key="arts" style={{ textAlign: 'center' }}>
+          <button className="btn btn-ghost btn-xs" onClick={() => toggleArtefactos(c.idConsumo)} title="Ver artefactos">
+            {artefactos.length ? `🔌 ${artefactos.length}` : '—'}
+          </button>
+          {expanded && artefactos.length > 0 && (
+            <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 4, minWidth: 160 }}>
+              {artefactos.map((a) => (
+                <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 8px', background: 'var(--ld-white)', borderRadius: 6, fontSize: '0.8rem' }}>
+                  <span style={{ fontWeight: 600 }}>{a.nombre}</span>
+                  <span style={{ color: 'var(--text-light)' }}>{a.watts}W</span>
+                </div>
+              ))}
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 8px', fontWeight: 700, fontSize: '0.8rem', borderTop: '1px solid rgba(0,0,0,0.1)', marginTop: 2 }}>
+                <span>Total</span>
+                <span>{totalW}W</span>
+              </div>
+            </div>
+          )}
+        </div>,
+      ],
+    }
+  })
 
   return (
     <>
@@ -136,7 +167,7 @@ export default function AdminDashboard() {
                 <div className="panel-layout full-width" style={{ marginTop: 24 }}>
                   <PanelBlock title="📋 Últimos Consumos Registrados">
                     <DataTable
-                      headers={['ID', 'Cliente', 'kWh', 'Costo', 'CO2', 'Fecha']}
+                      headers={['ID', 'Cliente', 'kWh', 'Costo', 'CO2', 'Fecha', 'Artefactos']}
                       rows={consumosRows}
                       emptyMessage="No hay consumos registrados."
                     />
