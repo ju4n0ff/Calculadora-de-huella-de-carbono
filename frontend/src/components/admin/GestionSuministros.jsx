@@ -18,6 +18,7 @@ export default function GestionSuministros({ addToast }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [processingId, setProcessingId] = useState(null)
+  const [evaluatingId, setEvaluatingId] = useState(null)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -42,7 +43,7 @@ export default function GestionSuministros({ addToast }) {
     setProcessingId(id)
     try {
       await suministroApi.actualizarEstado(id, estado)
-      addToast(`Suministro ${estado === 'activo' ? 'aprobado' : 'rechazado'} correctamente.`)
+      addToast(`Suministro ${estado === 'activo' ? 'aprobado' : estado === 'pendiente' ? 'enviado a revisión' : 'rechazado'} correctamente.`)
       await load()
     } catch (err) {
       addToast('Error al actualizar estado: ' + (err.message || 'desconocido'))
@@ -89,6 +90,37 @@ export default function GestionSuministros({ addToast }) {
               {processingId === s.idSuministro ? '...' : 'Rechazar'}
             </button>
           </>
+        ) : s.estado === 'rechazado' && evaluatingId === s.idSuministro ? (
+          <>
+            <button
+              className="btn btn-gold btn-xs"
+              onClick={() => { setEvaluatingId(null); handleEstado(s.idSuministro, 'pendiente') }}
+              disabled={processingId === s.idSuministro}
+            >
+              {processingId === s.idSuministro ? '...' : 'Volver a Pendiente'}
+            </button>
+            <button
+              className="btn btn-success btn-xs"
+              onClick={() => { setEvaluatingId(null); handleEstado(s.idSuministro, 'activo') }}
+              disabled={processingId === s.idSuministro}
+            >
+              {processingId === s.idSuministro ? '...' : 'Aprobar'}
+            </button>
+            <button
+              className="btn btn-ghost btn-xs"
+              onClick={() => setEvaluatingId(null)}
+              disabled={processingId === s.idSuministro}
+            >
+              Cancelar
+            </button>
+          </>
+        ) : s.estado === 'rechazado' ? (
+          <button
+            className="btn btn-gold btn-xs"
+            onClick={() => setEvaluatingId(s.idSuministro)}
+          >
+            Evaluar
+          </button>
         ) : (
           <span style={{ color: 'var(--text-light)', fontSize: '0.82rem', fontWeight: 500 }}>
             Sin acciones

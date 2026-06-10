@@ -113,7 +113,8 @@ export default function CalculatorPage({ suministros, onGuardar, saving, suminis
             className="btn-action-secondary"
             disabled={!analisisValido || !suministroId || saving}
             onClick={() => {
-              setPendingSave({ totalKwh, costoSoles, co2Kg, horas, dias })
+              const seleccionados = artefactos.filter((a) => selected.has(a.id))
+              setPendingSave({ totalKwh, costoSoles, co2Kg, horas, dias, artefactos: seleccionados })
               setShowSaveModal(true)
             }}
           >

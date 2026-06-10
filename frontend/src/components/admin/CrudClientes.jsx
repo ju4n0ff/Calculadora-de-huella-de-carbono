@@ -152,7 +152,7 @@ export default function CrudClientes({ addToast }) {
               </option>
             ))}
           </select>
-        ) : (c.idTarifa ? `Tarifa #${c.idTarifa}` : '—'),
+        ) : (c.idTarifa ? (tarifas.find(t => t.idTarifa === c.idTarifa)?.nombre || '—') : '—'),
         <div key="acc" className="action-btns">
           {isEditing ? (
             <>

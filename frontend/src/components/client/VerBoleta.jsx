@@ -7,6 +7,41 @@ import ErrorBanner from '../ui/ErrorBanner'
 
 const borderVar = 'rgba(38, 49, 132, 0.12)'
 
+function ArtefactosSummary({ detallesRaw }) {
+  const [open, setOpen] = useState(false)
+  let artefactos = []
+  try {
+    artefactos = detallesRaw ? JSON.parse(detallesRaw) : []
+  } catch { artefactos = [] }
+  if (!artefactos.length) return null
+  const totalWatts = artefactos.reduce((s, a) => s + a.watts, 0)
+  return (
+    <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${borderVar}` }}>
+      <button className="btn btn-ghost btn-xs" onClick={() => setOpen(!open)}>
+        {open ? '▲' : '▼'} Artefactos utilizados ({artefactos.length})
+      </button>
+      {open && (
+        <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {artefactos.map((a) => (
+            <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 12px', background: 'var(--ld-white)', borderRadius: 8, fontSize: '0.85rem' }}>
+              <span style={{ fontWeight: 600 }}>{a.nombre}</span>
+              <span style={{ color: 'var(--text-light)' }}>{a.watts}W</span>
+            </div>
+          ))}
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 12px', fontWeight: 700, fontSize: '0.85rem', borderTop: `1px solid ${borderVar}`, marginTop: 4 }}>
+            <span>Potencia total</span>
+            <span>{totalWatts}W</span>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+ArtefactosSummary.propTypes = {
+  detallesRaw: PropTypes.string,
+}
+
 export default function VerBoleta({ clienteId }) {
   const [consumos, setConsumos] = useState([])
   const [suministros, setSuministros] = useState([])
@@ -135,6 +170,7 @@ export default function VerBoleta({ clienteId }) {
                 <span><strong style={{ color: 'var(--text-dark)' }}>Días:</strong> {c.dias || '—'}</span>
                 <span><strong style={{ color: 'var(--text-dark)' }}>Suministro:</strong> #{c.suministro?.idSuministro || '—'}</span>
               </div>
+              <ArtefactosSummary detallesRaw={c.detalles} />
             </div>
           ))}
         </div>

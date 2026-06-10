@@ -39,4 +39,7 @@ public class Consumo {
 
     @Column(name = "fecha")
     private LocalDate fecha;
+
+    @Column(columnDefinition = "TEXT")
+    private String detalles;
 }

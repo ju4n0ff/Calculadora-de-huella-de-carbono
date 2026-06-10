@@ -3,7 +3,7 @@ const BASE = '/api'
 async function handleResponse(res) {
   if (!res.ok) {
     const msg = await res.text().catch(() => 'Error del servidor')
-    throw new Error(msg || `HTTP ${res.status}`)
+    throw new Error(msg || (res.status === 401 || res.status === 404 ? 'Datos incorrectos' : `Error ${res.status}`))
   }
   return res.json()
 }

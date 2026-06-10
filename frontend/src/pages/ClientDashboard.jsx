@@ -111,7 +111,7 @@ export default function ClientDashboard() {
     }
   }, [activePanel, store])
 
-  const guardarConsumo = async ({ totalKwh, costoSoles, co2Kg, horas, dias }) => {
+  const guardarConsumo = async ({ totalKwh, costoSoles, co2Kg, horas, dias, artefactos }) => {
     if (!suministroId) return
     setSaving(true)
     try {
@@ -124,6 +124,7 @@ export default function ClientDashboard() {
         costoTotal: costoSoles,
         huellaCarbono: co2Kg,
         fecha: new Date().toISOString().split('T')[0],
+        detalles: artefactos ? JSON.stringify(artefactos.map(a => ({ id: a.id, nombre: a.nombre, watts: a.watts }))) : null,
       }
       await consumoApi.guardar(payload)
       addToast('¡Consumo guardado exitosamente en la base de datos!')
