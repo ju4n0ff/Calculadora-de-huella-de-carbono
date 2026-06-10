@@ -8,7 +8,14 @@ import ErrorBanner from '../ui/ErrorBanner'
 
 const estadoStyles = {
   pendiente: { background: '#fef3c7', color: '#92400e' },
-  respondido: { background: '#d1fae5', color: '#065f46' },
+  en_proceso: { background: '#dbeafe', color: '#1e40af' },
+  resuelto: { background: '#d1fae5', color: '#065f46' },
+}
+
+const estadoLabels = {
+  pendiente: 'Pendiente',
+  en_proceso: 'En Proceso',
+  resuelto: 'Resuelto',
 }
 
 export default function GestionReclamos({ addToast, adminId }) {
@@ -18,6 +25,7 @@ export default function GestionReclamos({ addToast, adminId }) {
   const [error, setError] = useState('')
   const [respondiendo, setRespondiendo] = useState(null)
   const [respuesta, setRespuesta] = useState('')
+  const [nuevoEstado, setNuevoEstado] = useState('resuelto')
   const [saving, setSaving] = useState(false)
 
   const load = useCallback(async () => {
@@ -48,10 +56,15 @@ export default function GestionReclamos({ addToast, adminId }) {
     if (!respuesta.trim()) return
     setSaving(true)
     try {
-      await reclamoApi.responder(id, { respuesta, idAdministrador: adminId })
-      addToast('Respuesta enviada correctamente.')
+      await reclamoApi.responder(id, {
+        respuesta,
+        idAdministrador: adminId,
+        estado: nuevoEstado,
+      })
+      addToast(`Reclamo respondido y marcado como "${estadoLabels[nuevoEstado]}".`)
       setRespondiendo(null)
       setRespuesta('')
+      setNuevoEstado('resuelto')
       await load()
     } catch (err) {
       addToast('Error al responder: ' + (err.message || 'desconocido'))
@@ -75,19 +88,19 @@ export default function GestionReclamos({ addToast, adminId }) {
         className="badge"
         style={estadoStyles[r.estado] || estadoStyles.pendiente}
       >
-        {r.estado}
+        {estadoLabels[r.estado] || r.estado}
       </span>,
       <div key="acc" className="action-btns">
-        {r.estado === 'pendiente' ? (
+        {r.estado === 'pendiente' || r.estado === 'en_proceso' ? (
           <button
             className="btn btn-primary btn-xs"
-            onClick={() => { setRespondiendo(r); setRespuesta('') }}
+            onClick={() => { setRespondiendo(r); setRespuesta(''); setNuevoEstado('resuelto') }}
           >
             Responder
           </button>
         ) : (
           <span style={{ color: 'var(--text-light)', fontSize: '0.82rem', fontWeight: 500 }}>
-            {r.respuestaAdmin ? 'Respondido ✓' : '—'}
+            {r.estado === 'resuelto' ? 'Resuelto ✓' : '—'}
           </span>
         )}
       </div>,
@@ -103,6 +116,11 @@ export default function GestionReclamos({ addToast, adminId }) {
             {reclamos.filter((r) => r.estado === 'pendiente').length > 0 && (
               <span style={{ marginLeft: 8, color: '#92400e', background: '#fef3c7', padding: '2px 10px', borderRadius: 10, fontSize: '0.8rem' }}>
                 {reclamos.filter((r) => r.estado === 'pendiente').length} pendiente(s)
+              </span>
+            )}
+            {reclamos.filter((r) => r.estado === 'en_proceso').length > 0 && (
+              <span style={{ marginLeft: 8, color: '#1e40af', background: '#dbeafe', padding: '2px 10px', borderRadius: 10, fontSize: '0.8rem' }}>
+                {reclamos.filter((r) => r.estado === 'en_proceso').length} en proceso
               </span>
             )}
           </span>
@@ -137,6 +155,18 @@ export default function GestionReclamos({ addToast, adminId }) {
                 placeholder="Escribe tu respuesta al cliente..."
               />
             </div>
+            <div className="form-group">
+              <label>Estado después de responder</label>
+              <select
+                className="form-control"
+                value={nuevoEstado}
+                onChange={(e) => setNuevoEstado(e.target.value)}
+              >
+                <option value="resuelto">Resuelto — problema solucionado</option>
+                <option value="en_proceso">En Proceso — se necesita más revisión</option>
+                <option value="pendiente">Pendiente — esperando más información</option>
+              </select>
+            </div>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 20 }}>
               <button className="btn btn-ghost btn-md" onClick={() => setRespondiendo(null)} disabled={saving}>
                 Cancelar
@@ -146,7 +176,7 @@ export default function GestionReclamos({ addToast, adminId }) {
                 onClick={() => handleResponder(respondiendo.idReclamo)}
                 disabled={saving || !respuesta.trim()}
               >
-                {saving ? 'Enviando...' : 'Enviar Respuesta'}
+                {saving ? 'Enviando...' : `Responder y marcar como ${estadoLabels[nuevoEstado]}`}
               </button>
             </div>
           </div>

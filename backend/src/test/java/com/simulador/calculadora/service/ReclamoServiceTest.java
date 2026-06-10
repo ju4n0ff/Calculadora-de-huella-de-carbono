@@ -62,22 +62,35 @@ class ReclamoServiceTest {
     }
 
     @Test
-    void deberiaResponderReclamo() {
+    void deberiaResponderReclamoComoResuelto() {
         Administrador admin = new Administrador();
         admin.setIdAdministrador(1);
 
         when(reclamoRepository.findById(1)).thenReturn(Optional.of(reclamo));
         when(reclamoRepository.save(any(Reclamo.class))).thenReturn(reclamo);
 
-        Reclamo resultado = reclamoService.responder(1, "Gracias por su reporte", 1);
-        assertEquals("respondido", resultado.getEstado());
+        Reclamo resultado = reclamoService.responder(1, "Gracias por su reporte", 1, "resuelto");
+        assertEquals("resuelto", resultado.getEstado());
         assertEquals("Gracias por su reporte", resultado.getRespuestaAdmin());
         verify(reclamoRepository).findById(1);
     }
 
     @Test
+    void deberiaResponderReclamoComoEnProceso() {
+        Administrador admin = new Administrador();
+        admin.setIdAdministrador(1);
+
+        when(reclamoRepository.findById(1)).thenReturn(Optional.of(reclamo));
+        when(reclamoRepository.save(any(Reclamo.class))).thenReturn(reclamo);
+
+        Reclamo resultado = reclamoService.responder(1, "Estamos revisando", 1, "en_proceso");
+        assertEquals("en_proceso", resultado.getEstado());
+        verify(reclamoRepository).findById(1);
+    }
+
+    @Test
     void deberiaLanzarExcepcionSiRespuestaEsVacia() {
-        assertThrows(IllegalArgumentException.class, () -> reclamoService.responder(1, "", 1));
+        assertThrows(IllegalArgumentException.class, () -> reclamoService.responder(1, "", 1, "resuelto"));
     }
 
     @Test

@@ -19,6 +19,6 @@ public interface ReclamoService {
     /** Guarda un nuevo reclamo. */
     Reclamo guardar(Reclamo reclamo);
 
-    /** Responde un reclamo y lo marca como respondido. */
-    Reclamo responder(Integer id, String respuesta, Integer idAdmin);
+    /** Responde un reclamo y actualiza su estado (resuelto, en_proceso, pendiente). */
+    Reclamo responder(Integer id, String respuesta, Integer idAdmin, String nuevoEstado);
 }

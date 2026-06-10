@@ -56,15 +56,17 @@ public class ReclamoServiceImpl implements ReclamoService {
     }
 
     @Override
-    public Reclamo responder(Integer id, String respuesta, Integer idAdmin) {
+    public Reclamo responder(Integer id, String respuesta, Integer idAdmin, String nuevoEstado) {
         Preconditions.checkNotNull(id, "El ID del reclamo no puede ser nulo");
         Preconditions.checkArgument(StringUtils.isNotBlank(respuesta), "La respuesta no puede estar vacía");
         Preconditions.checkNotNull(idAdmin, "El ID del administrador no puede ser nulo");
-        log.info("Respondiendo reclamo ID: {} por admin ID: {}", id, idAdmin);
+        Preconditions.checkArgument(nuevoEstado == null || List.of("resuelto", "en_proceso", "pendiente").contains(nuevoEstado),
+                "Estado inválido: " + nuevoEstado);
+        log.info("Respondiendo reclamo ID: {} por admin ID: {} -> estado: {}", id, idAdmin, nuevoEstado);
         return reclamoRepository.findById(id)
                 .map(r -> {
                     r.setRespuestaAdmin(respuesta);
-                    r.setEstado("respondido");
+                    r.setEstado(nuevoEstado != null ? nuevoEstado : "resuelto");
                     Administrador admin = new Administrador();
                     admin.setIdAdministrador(idAdmin);
                     r.setAdministrador(admin);
