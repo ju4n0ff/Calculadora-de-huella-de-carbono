@@ -9,7 +9,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/reclamos")
-@CrossOrigin(origins = "*")
 public class ReclamoController {
 
     @Autowired

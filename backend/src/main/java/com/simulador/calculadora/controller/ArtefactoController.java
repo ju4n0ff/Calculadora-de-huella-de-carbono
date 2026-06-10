@@ -9,7 +9,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/artefactos")
-@CrossOrigin(origins = "*")
 public class ArtefactoController {
 
     @Autowired

@@ -9,7 +9,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/tarifas")
-@CrossOrigin(origins = "*")
 public class TarifaController {
 
     @Autowired

@@ -1,0 +1,25 @@
+{
+  "folders": [
+    {
+      "name": "backend",
+      "path": "backend"
+    },
+    {
+      "name": "frontend",
+      "path": "frontend"
+    }
+  ],
+  "settings": {
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.compile.nullAnalysis.mode": "automatic"
+  },
+  "extensions": {
+    "recommendations": [
+      "vscjava.vscode-spring-boot-dashboard",
+      "vscjava.vscode-spring-initializr",
+      "vscjava.vscode-spring-boot",
+      "vscjava.vscode-java-pack",
+      "Pivotal.vscode-boot-dev-pack"
+    ]
+  }
+}

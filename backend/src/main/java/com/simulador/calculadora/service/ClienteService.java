@@ -2,35 +2,58 @@ package com.simulador.calculadora.service;
 
 import com.simulador.calculadora.model.Cliente;
 import com.simulador.calculadora.repository.ClienteRepository;
+import com.google.common.base.Preconditions;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+/** Servicio que gestiona la lógica de negocio para la entidad Cliente. */
 @Service
 public class ClienteService {
+
+    private static final Logger log = LoggerFactory.getLogger(ClienteService.class);
 
     @Autowired
     private ClienteRepository clienteRepository;
 
+    /** Retorna todos los clientes registrados. */
     public List<Cliente> listarTodos() {
+        log.info("Listando todos los clientes");
         return clienteRepository.findAll();
     }
 
+    /** Busca un cliente por su ID. */
     public Optional<Cliente> buscarPorId(Integer idCliente) {
+        Preconditions.checkNotNull(idCliente, "El ID del cliente no puede ser nulo");
+        log.debug("Buscando cliente por ID: {}", idCliente);
         return clienteRepository.findById(idCliente);
     }
 
+    /** Busca un cliente por su número de DNI. */
     public Optional<Cliente> buscarPorDni(String dni) {
+        Preconditions.checkArgument(StringUtils.isNotBlank(dni), "El DNI no puede estar vacío");
+        log.debug("Buscando cliente por DNI: {}", dni);
         return clienteRepository.findByDni(dni);
     }
 
+    /** Guarda un nuevo cliente. */
     public Cliente guardar(Cliente cliente) {
+        Preconditions.checkNotNull(cliente, "El cliente no puede ser nulo");
+        Preconditions.checkArgument(StringUtils.isNotBlank(cliente.getNombre()), "El nombre del cliente es obligatorio");
+        log.info("Guardando cliente: {}", cliente.getNombre());
         return clienteRepository.save(cliente);
     }
 
+    /** Actualiza los datos de un cliente existente. */
     public Cliente actualizar(Integer idCliente, Cliente datosActualizados) {
+        Preconditions.checkNotNull(idCliente, "El ID del cliente no puede ser nulo");
+        Preconditions.checkNotNull(datosActualizados, "Los datos actualizados no pueden ser nulos");
+        log.info("Actualizando cliente ID: {}", idCliente);
         return clienteRepository.findById(idCliente)
                 .map(cliente -> {
                     cliente.setNombre(datosActualizados.getNombre());
@@ -38,13 +61,16 @@ public class ClienteService {
                     cliente.setIdTarifa(datosActualizados.getIdTarifa());
                     return clienteRepository.save(cliente);
                 })
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + idCliente));
     }
 
+    /** Elimina un cliente por su ID. */
     public void eliminar(Integer idCliente) {
+        Preconditions.checkNotNull(idCliente, "El ID del cliente no puede ser nulo");
         if (!clienteRepository.existsById(idCliente)) {
-            throw new RuntimeException("Cliente no encontrado");
+            throw new RuntimeException("Cliente no encontrado con ID: " + idCliente);
         }
+        log.warn("Eliminando cliente ID: {}", idCliente);
         clienteRepository.deleteById(idCliente);
     }
 }

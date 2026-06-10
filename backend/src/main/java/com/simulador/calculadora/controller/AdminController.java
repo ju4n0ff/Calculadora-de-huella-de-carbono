@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/administradores")
-@CrossOrigin(origins = "*") // Permite la comunicación con el frontend
 public class AdminController {
 
     @Autowired
