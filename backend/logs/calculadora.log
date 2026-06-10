@@ -1458,3 +1458,106 @@ Caused by: java.sql.SQLException: Failed to open the referenced table 'usuarios'
 2026-06-10 01:02:15 [http-nio-8080-exec-2] INFO  c.s.c.config.RequestLoggingFilter - GET /api/simulaciones -> 200 (50 ms)
 2026-06-10 01:02:15 [http-nio-8080-exec-4] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos -> 200 (66 ms)
 2026-06-10 01:02:15 [http-nio-8080-exec-10] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (73 ms)
+2026-06-10 01:06:57 [http-nio-8080-exec-3] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:06:57 [http-nio-8080-exec-3] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (42 ms)
+2026-06-10 01:06:57 [http-nio-8080-exec-6] INFO  c.s.c.config.RequestLoggingFilter - GET /api/tarifas -> 200 (43 ms)
+2026-06-10 01:06:57 [http-nio-8080-exec-1] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:06:58 [http-nio-8080-exec-8] INFO  c.s.c.config.RequestLoggingFilter - GET /api/tarifas -> 200 (26 ms)
+2026-06-10 01:06:58 [http-nio-8080-exec-1] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (31 ms)
+2026-06-10 01:09:02 [http-nio-8080-exec-5] INFO  c.s.c.config.RequestLoggingFilter - GET /api/tarifas -> 200 (148 ms)
+2026-06-10 01:09:03 [http-nio-8080-exec-7] INFO  c.s.c.config.RequestLoggingFilter - GET /api/tarifas -> 200 (65 ms)
+2026-06-10 01:09:03 [http-nio-8080-exec-2] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:09:04 [http-nio-8080-exec-2] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (62 ms)
+2026-06-10 01:09:04 [http-nio-8080-exec-9] INFO  c.s.c.config.RequestLoggingFilter - GET /api/reclamos -> 200 (64 ms)
+2026-06-10 01:09:04 [http-nio-8080-exec-4] INFO  c.s.c.config.RequestLoggingFilter - GET /api/reclamos -> 200 (47 ms)
+2026-06-10 01:09:04 [http-nio-8080-exec-10] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:09:04 [http-nio-8080-exec-10] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (103 ms)
+2026-06-10 01:09:05 [http-nio-8080-exec-3] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:09:05 [http-nio-8080-exec-6] INFO  c.s.c.config.RequestLoggingFilter - GET /api/tarifas -> 200 (38 ms)
+2026-06-10 01:09:05 [http-nio-8080-exec-3] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (89 ms)
+2026-06-10 01:09:05 [http-nio-8080-exec-8] INFO  c.s.c.config.RequestLoggingFilter - GET /api/tarifas -> 200 (49 ms)
+2026-06-10 01:09:05 [http-nio-8080-exec-1] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:09:05 [http-nio-8080-exec-1] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (54 ms)
+2026-06-10 01:09:06 [http-nio-8080-exec-5] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:09:06 [http-nio-8080-exec-5] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (55 ms)
+2026-06-10 01:09:06 [http-nio-8080-exec-7] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos -> 200 (45 ms)
+2026-06-10 01:09:06 [http-nio-8080-exec-2] INFO  c.s.c.config.RequestLoggingFilter - GET /api/simulaciones -> 200 (70 ms)
+2026-06-10 01:09:13 [http-nio-8080-exec-10] INFO  c.s.c.config.RequestLoggingFilter - GET /api/simulaciones -> 200 (34 ms)
+2026-06-10 01:09:13 [http-nio-8080-exec-9] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:09:13 [http-nio-8080-exec-4] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos -> 200 (91 ms)
+2026-06-10 01:09:13 [http-nio-8080-exec-9] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (104 ms)
+2026-06-10 01:11:59 [http-nio-8080-exec-6] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:11:59 [http-nio-8080-exec-6] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (15 ms)
+2026-06-10 01:11:59 [http-nio-8080-exec-3] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos -> 200 (30 ms)
+2026-06-10 01:11:59 [http-nio-8080-exec-8] INFO  c.s.c.config.RequestLoggingFilter - GET /api/simulaciones -> 200 (12 ms)
+2026-06-10 01:13:22 [http-nio-8080-exec-1] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:13:22 [http-nio-8080-exec-1] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (39 ms)
+2026-06-10 01:13:22 [http-nio-8080-exec-5] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos -> 200 (40 ms)
+2026-06-10 01:13:22 [http-nio-8080-exec-2] INFO  c.s.c.config.RequestLoggingFilter - GET /api/simulaciones -> 200 (40 ms)
+2026-06-10 01:13:22 [http-nio-8080-exec-7] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos -> 200 (20 ms)
+2026-06-10 01:13:22 [http-nio-8080-exec-10] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:13:22 [http-nio-8080-exec-4] INFO  c.s.c.config.RequestLoggingFilter - GET /api/simulaciones -> 200 (12 ms)
+2026-06-10 01:13:22 [http-nio-8080-exec-10] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (18 ms)
+2026-06-10 01:13:24 [http-nio-8080-exec-9] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:13:24 [http-nio-8080-exec-3] INFO  c.s.c.config.RequestLoggingFilter - GET /api/simulaciones -> 200 (37 ms)
+2026-06-10 01:13:24 [http-nio-8080-exec-6] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos -> 200 (75 ms)
+2026-06-10 01:13:24 [http-nio-8080-exec-9] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (122 ms)
+2026-06-10 01:13:24 [http-nio-8080-exec-5] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:13:24 [http-nio-8080-exec-8] INFO  c.s.c.config.RequestLoggingFilter - GET /api/simulaciones -> 200 (62 ms)
+2026-06-10 01:13:24 [http-nio-8080-exec-1] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos -> 200 (85 ms)
+2026-06-10 01:13:24 [http-nio-8080-exec-5] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (81 ms)
+2026-06-10 01:13:25 [http-nio-8080-exec-2] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:13:25 [http-nio-8080-exec-2] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (10 ms)
+2026-06-10 01:13:25 [http-nio-8080-exec-7] INFO  c.s.c.config.RequestLoggingFilter - GET /api/tarifas -> 200 (10 ms)
+2026-06-10 01:13:25 [http-nio-8080-exec-10] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:13:25 [http-nio-8080-exec-4] INFO  c.s.c.config.RequestLoggingFilter - GET /api/tarifas -> 200 (12 ms)
+2026-06-10 01:13:25 [http-nio-8080-exec-10] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (12 ms)
+2026-06-10 01:13:30 [http-nio-8080-exec-3] INFO  c.s.c.service.ClienteService - Actualizando cliente ID: 41203
+2026-06-10 01:13:30 [http-nio-8080-exec-3] INFO  c.s.c.config.RequestLoggingFilter - PUT /api/clientes/41203 -> 200 (35 ms)
+2026-06-10 01:13:30 [http-nio-8080-exec-6] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:13:30 [http-nio-8080-exec-9] INFO  c.s.c.config.RequestLoggingFilter - GET /api/tarifas -> 200 (24 ms)
+2026-06-10 01:13:30 [http-nio-8080-exec-6] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (86 ms)
+2026-06-10 01:13:31 [http-nio-8080-exec-8] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:13:31 [http-nio-8080-exec-8] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (112 ms)
+2026-06-10 01:13:31 [http-nio-8080-exec-5] INFO  c.s.c.config.RequestLoggingFilter - GET /api/simulaciones -> 200 (36 ms)
+2026-06-10 01:13:31 [http-nio-8080-exec-1] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos -> 200 (173 ms)
+2026-06-10 01:13:31 [http-nio-8080-exec-2] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:13:31 [http-nio-8080-exec-7] INFO  c.s.c.config.RequestLoggingFilter - GET /api/simulaciones -> 200 (16 ms)
+2026-06-10 01:13:31 [http-nio-8080-exec-2] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (18 ms)
+2026-06-10 01:13:31 [http-nio-8080-exec-4] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos -> 200 (29 ms)
+2026-06-10 01:13:35 [http-nio-8080-exec-10] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:13:35 [http-nio-8080-exec-9] INFO  c.s.c.config.RequestLoggingFilter - GET /api/simulaciones -> 200 (79 ms)
+2026-06-10 01:13:35 [http-nio-8080-exec-10] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (109 ms)
+2026-06-10 01:13:35 [http-nio-8080-exec-3] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos -> 200 (111 ms)
+2026-06-10 01:13:37 [http-nio-8080-exec-6] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:13:37 [http-nio-8080-exec-5] INFO  c.s.c.config.RequestLoggingFilter - GET /api/simulaciones -> 200 (21 ms)
+2026-06-10 01:13:37 [http-nio-8080-exec-6] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (27 ms)
+2026-06-10 01:13:37 [http-nio-8080-exec-8] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos -> 200 (47 ms)
+2026-06-10 01:13:37 [http-nio-8080-exec-7] INFO  c.s.c.service.ClienteService - Listando todos los clientes
+2026-06-10 01:13:37 [http-nio-8080-exec-1] INFO  c.s.c.config.RequestLoggingFilter - GET /api/simulaciones -> 200 (24 ms)
+2026-06-10 01:13:37 [http-nio-8080-exec-7] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes -> 200 (22 ms)
+2026-06-10 01:13:37 [http-nio-8080-exec-2] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos -> 200 (28 ms)
+2026-06-10 01:13:44 [http-nio-8080-exec-4] INFO  c.s.c.config.RequestLoggingFilter - GET /api/clientes/41203 -> 200 (17 ms)
+2026-06-10 01:13:49 [http-nio-8080-exec-9] INFO  c.s.c.config.RequestLoggingFilter - GET /api/suministros/cliente/41203 -> 200 (42 ms)
+2026-06-10 01:14:00 [http-nio-8080-exec-10] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos/cliente/41203 -> 200 (88 ms)
+2026-06-10 01:14:00 [http-nio-8080-exec-3] INFO  c.s.c.config.RequestLoggingFilter - GET /api/suministros/cliente/41203 -> 200 (75 ms)
+2026-06-10 01:14:00 [http-nio-8080-exec-5] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos/cliente/41203 -> 200 (73 ms)
+2026-06-10 01:14:00 [http-nio-8080-exec-6] INFO  c.s.c.config.RequestLoggingFilter - GET /api/suministros/cliente/41203 -> 200 (60 ms)
+2026-06-10 01:14:09 [http-nio-8080-exec-8] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos/cliente/41203 -> 200 (21 ms)
+2026-06-10 01:14:09 [http-nio-8080-exec-1] INFO  c.s.c.config.RequestLoggingFilter - GET /api/suministros/cliente/41203 -> 200 (23 ms)
+2026-06-10 01:14:09 [http-nio-8080-exec-2] INFO  c.s.c.config.RequestLoggingFilter - GET /api/suministros/cliente/41203 -> 200 (27 ms)
+2026-06-10 01:14:09 [http-nio-8080-exec-7] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos/cliente/41203 -> 200 (56 ms)
+2026-06-10 01:14:13 [http-nio-8080-exec-4] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos/cliente/41203 -> 200 (67 ms)
+2026-06-10 01:14:13 [http-nio-8080-exec-9] INFO  c.s.c.config.RequestLoggingFilter - GET /api/suministros/cliente/41203 -> 200 (88 ms)
+2026-06-10 01:14:13 [http-nio-8080-exec-3] INFO  c.s.c.config.RequestLoggingFilter - GET /api/suministros/cliente/41203 -> 200 (29 ms)
+2026-06-10 01:14:13 [http-nio-8080-exec-10] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos/cliente/41203 -> 200 (89 ms)
+2026-06-10 01:14:14 [http-nio-8080-exec-5] INFO  c.s.c.config.RequestLoggingFilter - GET /api/suministros/cliente/41203 -> 200 (32 ms)
+2026-06-10 01:14:14 [http-nio-8080-exec-6] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos/cliente/41203 -> 200 (26 ms)
+2026-06-10 01:14:17 [http-nio-8080-exec-8] INFO  c.s.c.config.RequestLoggingFilter - GET /api/suministros/cliente/41203 -> 200 (10 ms)
+2026-06-10 01:14:17 [http-nio-8080-exec-1] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos/cliente/41203 -> 200 (36 ms)
+2026-06-10 01:14:17 [http-nio-8080-exec-2] INFO  c.s.c.config.RequestLoggingFilter - GET /api/suministros/cliente/41203 -> 200 (30 ms)
+2026-06-10 01:14:17 [http-nio-8080-exec-7] INFO  c.s.c.config.RequestLoggingFilter - GET /api/consumos/cliente/41203 -> 200 (54 ms)
+2026-06-10 01:14:17 [http-nio-8080-exec-4] INFO  c.s.c.config.RequestLoggingFilter - GET /api/reclamos/cliente/41203 -> 200 (8 ms)
+2026-06-10 01:14:17 [http-nio-8080-exec-9] INFO  c.s.c.config.RequestLoggingFilter - GET /api/suministros/cliente/41203 -> 200 (8 ms)
+2026-06-10 01:14:17 [http-nio-8080-exec-3] INFO  c.s.c.config.RequestLoggingFilter - GET /api/reclamos/cliente/41203 -> 200 (20 ms)
+2026-06-10 01:14:18 [http-nio-8080-exec-10] INFO  c.s.c.config.RequestLoggingFilter - GET /api/suministros/cliente/41203 -> 200 (52 ms)

@@ -17,6 +17,7 @@ export default function GestionSuministros({ addToast }) {
   const [clientes, setClientes] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [processingId, setProcessingId] = useState(null)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -38,12 +39,15 @@ export default function GestionSuministros({ addToast }) {
   useEffect(() => { load() }, [load])
 
   const handleEstado = async (id, estado) => {
+    setProcessingId(id)
     try {
       await suministroApi.actualizarEstado(id, estado)
       addToast(`Suministro ${estado === 'activo' ? 'aprobado' : 'rechazado'} correctamente.`)
       await load()
     } catch (err) {
       addToast('Error al actualizar estado: ' + (err.message || 'desconocido'))
+    } finally {
+      setProcessingId(null)
     }
   }
 
@@ -62,39 +66,50 @@ export default function GestionSuministros({ addToast }) {
       s.fuenteEnergia || '—',
       <span
         key="estado"
-        style={{
-          ...estadoStyles[s.estado] || estadoStyles.pendiente,
-          padding: '3px 12px', borderRadius: 20, fontWeight: 600, fontSize: '0.8rem', display: 'inline-block',
-        }}
+        className="badge"
+        style={estadoStyles[s.estado] || estadoStyles.pendiente}
       >
-        {s.estado}
+        {s.estado === 'activo' ? 'Activo' : s.estado === 'rechazado' ? 'Rechazado' : 'Pendiente'}
       </span>,
-      <div key="acciones" style={{ display: 'flex', gap: 6 }}>
-        {s.estado === 'pendiente' && (
+      <div key="acc" className="action-btns">
+        {s.estado === 'pendiente' ? (
           <>
             <button
-              className="btn-primary"
+              className="btn btn-success btn-xs"
               onClick={() => handleEstado(s.idSuministro, 'activo')}
-              style={{ padding: '4px 14px', fontSize: '0.8rem' }}
+              disabled={processingId === s.idSuministro}
             >
-              Aprobar
+              {processingId === s.idSuministro ? '...' : 'Aprobar'}
             </button>
             <button
-              className="btn-flat-danger"
+              className="btn btn-ghost-danger btn-xs"
               onClick={() => handleEstado(s.idSuministro, 'rechazado')}
-              style={{ padding: '4px 14px', fontSize: '0.8rem' }}
+              disabled={processingId === s.idSuministro}
             >
-              Rechazar
+              {processingId === s.idSuministro ? '...' : 'Rechazar'}
             </button>
           </>
+        ) : (
+          <span style={{ color: 'var(--text-light)', fontSize: '0.82rem', fontWeight: 500 }}>
+            Sin acciones
+          </span>
         )}
-        {s.estado !== 'pendiente' && <span style={{ color: 'var(--text-light)', fontSize: '0.85rem' }}>—</span>}
       </div>,
     ],
   }))
 
   return (
     <PanelBlock title="🔌 Gestión de Suministros">
+      <div className="header-actions">
+        <span style={{ color: 'var(--text-light)', fontSize: '0.85rem', fontWeight: 500 }}>
+          {suministros.length} suministro{suministros.length !== 1 ? 's' : ''} registrado{suministros.length !== 1 ? 's' : ''}
+          {suministros.filter((s) => s.estado === 'pendiente').length > 0 && (
+            <span style={{ marginLeft: 8, color: '#92400e', background: '#fef3c7', padding: '2px 10px', borderRadius: 10, fontSize: '0.8rem' }}>
+              {suministros.filter((s) => s.estado === 'pendiente').length} pendiente(s)
+            </span>
+          )}
+        </span>
+      </div>
       <ErrorBanner message={error} onRetry={load} />
       {loading ? (
         <Spinner text="Cargando suministros..." />

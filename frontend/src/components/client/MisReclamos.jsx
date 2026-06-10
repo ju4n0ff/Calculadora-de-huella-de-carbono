@@ -71,7 +71,7 @@ export default function MisReclamos({ clienteId, addToast }) {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Suministro (opcional)</label>
-            <select value={selectedSum} onChange={(e) => setSelectedSum(e.target.value)}>
+            <select className="form-control" value={selectedSum} onChange={(e) => setSelectedSum(e.target.value)}>
               <option value="">— Selecciona un suministro —</option>
               {suministros.map((s) => (
                 <option key={s.idSuministro} value={s.idSuministro}>
@@ -83,6 +83,7 @@ export default function MisReclamos({ clienteId, addToast }) {
           <div className="form-group">
             <label>Descripción del Reclamo</label>
             <textarea
+              className="form-control"
               value={descripcion}
               onChange={(e) => setDescripcion(e.target.value)}
               rows={4}
@@ -92,9 +93,8 @@ export default function MisReclamos({ clienteId, addToast }) {
           </div>
           <button
             type="submit"
-            className="btn-primary"
+            className="btn btn-primary btn-lg"
             disabled={saving || !descripcion.trim()}
-            style={{ width: 'auto', padding: '12px 32px' }}
           >
             {saving ? 'Enviando...' : 'Enviar Reclamo'}
           </button>

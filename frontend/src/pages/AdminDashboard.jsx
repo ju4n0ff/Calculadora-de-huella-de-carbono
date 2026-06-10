@@ -112,10 +112,9 @@ export default function AdminDashboard() {
               <div className="active-panel">
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
                   <button
-                    className="btn-flat-info"
+                    className="btn btn-ghost btn-md"
                     onClick={() => loadData(true)}
                     disabled={refreshing}
-                    style={{ width: 'auto', padding: '8px 20px', borderStyle: 'solid' }}
                   >
                     {refreshing ? '↻ Actualizando...' : '↻ Actualizar Datos'}
                   </button>

@@ -13,11 +13,11 @@ export default function GestionTarifas({ addToast }) {
   const [tarifas, setTarifas] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [showForm, setShowForm] = useState(false)
-  const [editing, setEditing] = useState(null)
+  const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(emptyTarifa)
   const [saving, setSaving] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState(null)
+  const [creating, setCreating] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -34,23 +34,26 @@ export default function GestionTarifas({ addToast }) {
 
   useEffect(() => { load() }, [load])
 
-  const openCreate = () => {
-    setEditing(null)
-    setForm(emptyTarifa)
-    setShowForm(true)
-  }
-
-  const openEdit = (tarifa) => {
-    setEditing(tarifa)
+  const startEdit = (tarifa) => {
+    setEditingId(tarifa.idTarifa)
     setForm({
       nombre: tarifa.nombre || '',
       precioKwh: tarifa.precioKwh ?? '',
       descripcion: tarifa.descripcion || '',
     })
-    setShowForm(true)
   }
 
-  const handleSave = async () => {
+  const cancelEdit = () => {
+    setEditingId(null)
+    setForm(emptyTarifa)
+  }
+
+  const openCreate = () => {
+    setCreating(true)
+    setForm(emptyTarifa)
+  }
+
+  const handleSave = async (id) => {
     if (!form.nombre || form.precioKwh === '') return
     setSaving(true)
     try {
@@ -59,14 +62,15 @@ export default function GestionTarifas({ addToast }) {
         precioKwh: Number(form.precioKwh),
         descripcion: form.descripcion,
       }
-      if (editing) {
-        await tarifaApi.actualizar(editing.idTarifa, payload)
-        addToast('Tarifa actualizada correctamente.')
-      } else {
+      if (creating) {
         await tarifaApi.crear(payload)
         addToast('Tarifa creada correctamente.')
+      } else {
+        await tarifaApi.actualizar(id, payload)
+        addToast('Tarifa actualizada correctamente.')
       }
-      setShowForm(false)
+      setCreating(false)
+      cancelEdit()
       await load()
     } catch (err) {
       addToast('Error al guardar: ' + (err.message || 'desconocido'))
@@ -87,38 +91,74 @@ export default function GestionTarifas({ addToast }) {
     }
   }
 
-  const rows = tarifas.map((t) => ({
-    key: t.idTarifa,
-    cells: [
-      t.idTarifa,
-      t.nombre,
-      <span key="precio" style={{ color: 'var(--ld-blue)', fontWeight: 700 }}>S/. {t.precioKwh}</span>,
-      <span key="precio-unit" style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>por kWh</span>,
-      t.descripcion || '—',
-      <div key="acciones" style={{ display: 'flex', gap: 8 }}>
-        <button
-          className="btn-flat-info"
-          onClick={() => openEdit(t)}
-          style={{ padding: '4px 12px', fontSize: '0.8rem' }}
-        >
-          Editar
-        </button>
-        <button
-          className="btn-flat-danger"
-          onClick={() => setDeleteTarget(t)}
-          style={{ padding: '4px 12px', fontSize: '0.8rem' }}
-        >
-          Eliminar
-        </button>
-      </div>,
-    ],
-  }))
+  const rows = tarifas.map((t) => {
+    const isEditing = editingId === t.idTarifa
+    return {
+      key: t.idTarifa,
+      cells: [
+        isEditing ? t.idTarifa : t.idTarifa,
+        isEditing ? (
+          <input
+            className="inline-input"
+            value={form.nombre}
+            onChange={(e) => setForm({ ...form, nombre: e.target.value })}
+            autoFocus
+          />
+        ) : t.nombre,
+        isEditing ? (
+          <input
+            className="inline-input"
+            type="number"
+            step="0.01"
+            min="0"
+            value={form.precioKwh}
+            onChange={(e) => setForm({ ...form, precioKwh: e.target.value })}
+          />
+        ) : (
+          <span style={{ color: 'var(--ld-blue)', fontWeight: 700 }}>S/. {t.precioKwh}</span>
+        ),
+        isEditing ? (
+          <textarea
+            className="inline-input"
+            value={form.descripcion}
+            onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
+            rows={1}
+            style={{ resize: 'vertical' }}
+          />
+        ) : (t.descripcion || '—'),
+        <div key="acc" className="action-btns">
+          {isEditing ? (
+            <>
+              <button className="btn btn-success btn-xs" onClick={() => handleSave(t.idTarifa)} disabled={saving}>
+                {saving ? '...' : 'Guardar'}
+              </button>
+              <button className="btn btn-ghost btn-xs" onClick={cancelEdit} disabled={saving}>
+                Cancelar
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="btn btn-primary btn-xs" onClick={() => startEdit(t)}>
+                Editar
+              </button>
+              <button className="btn btn-ghost-danger btn-xs" onClick={() => setDeleteTarget(t)}>
+                Eliminar
+              </button>
+            </>
+          )}
+        </div>,
+      ],
+    }
+  })
 
   return (
     <>
       <PanelBlock title="💰 Gestión de Tarifas">
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
-          <button className="btn-primary" onClick={openCreate} style={{ width: 'auto', padding: '10px 24px' }}>
+        <div className="header-actions">
+          <span style={{ color: 'var(--text-light)', fontSize: '0.85rem', fontWeight: 500 }}>
+            {tarifas.length} tarifa{tarifas.length !== 1 ? 's' : ''} registrada{tarifas.length !== 1 ? 's' : ''}
+          </span>
+          <button className="btn btn-primary btn-md" onClick={openCreate}>
             + Nueva Tarifa
           </button>
         </div>
@@ -127,51 +167,35 @@ export default function GestionTarifas({ addToast }) {
           <Spinner text="Cargando tarifas..." />
         ) : (
           <DataTable
-            headers={['ID', 'Nombre', 'Precio', '', 'Descripción', 'Acciones']}
+            headers={['ID', 'Nombre', 'Precio', 'Descripción', 'Acciones']}
             rows={rows}
             emptyMessage="No hay tarifas registradas."
           />
         )}
       </PanelBlock>
 
-      {showForm && (
-        <div className="modal-overlay" onClick={() => !saving && setShowForm(false)}>
+      {creating && (
+        <div className="modal-overlay" onClick={() => !saving && setCreating(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3 style={{ color: 'var(--ld-blue)', marginBottom: 20 }}>
-              {editing ? 'Editar Tarifa' : 'Nueva Tarifa'}
-            </h3>
+            <h3>Nueva Tarifa</h3>
             <div className="form-group">
               <label>Nombre</label>
-              <input value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} />
+              <input className="form-control" value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} autoFocus />
             </div>
             <div className="form-group">
               <label>Precio por kWh (S/.)</label>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                value={form.precioKwh}
-                onChange={(e) => setForm({ ...form, precioKwh: e.target.value })}
-              />
+              <input className="form-control" type="number" step="0.01" min="0" value={form.precioKwh} onChange={(e) => setForm({ ...form, precioKwh: e.target.value })} />
             </div>
             <div className="form-group">
               <label>Descripción</label>
-              <textarea
-                value={form.descripcion}
-                onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
-                rows={3}
-              />
+              <textarea className="form-control" value={form.descripcion} onChange={(e) => setForm({ ...form, descripcion: e.target.value })} rows={3} />
             </div>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 20 }}>
-              <button className="btn-secondary" onClick={() => setShowForm(false)} disabled={saving}>
+              <button className="btn btn-ghost btn-md" onClick={() => setCreating(false)} disabled={saving}>
                 Cancelar
               </button>
-              <button
-                className="btn-primary"
-                onClick={handleSave}
-                disabled={saving || !form.nombre || form.precioKwh === ''}
-              >
-                {saving ? 'Guardando...' : editing ? 'Actualizar' : 'Crear'}
+              <button className="btn btn-primary btn-md" onClick={() => handleSave(null)} disabled={saving || !form.nombre || form.precioKwh === ''}>
+                {saving ? 'Guardando...' : 'Crear Tarifa'}
               </button>
             </div>
           </div>

@@ -72,25 +72,22 @@ export default function GestionReclamos({ addToast, adminId }) {
       r.fecha,
       <span
         key="estado"
-        style={{
-          ...estadoStyles[r.estado] || estadoStyles.pendiente,
-          padding: '3px 12px', borderRadius: 20, fontWeight: 600, fontSize: '0.8rem', display: 'inline-block',
-        }}
+        className="badge"
+        style={estadoStyles[r.estado] || estadoStyles.pendiente}
       >
         {r.estado}
       </span>,
-      <div key="accion">
+      <div key="acc" className="action-btns">
         {r.estado === 'pendiente' ? (
           <button
-            className="btn-primary"
+            className="btn btn-primary btn-xs"
             onClick={() => { setRespondiendo(r); setRespuesta('') }}
-            style={{ padding: '4px 14px', fontSize: '0.8rem' }}
           >
             Responder
           </button>
         ) : (
-          <span style={{ color: 'var(--text-light)', fontSize: '0.85rem' }}>
-            {r.respuestaAdmin ? 'Respondido' : '—'}
+          <span style={{ color: 'var(--text-light)', fontSize: '0.82rem', fontWeight: 500 }}>
+            {r.respuestaAdmin ? 'Respondido ✓' : '—'}
           </span>
         )}
       </div>,
@@ -100,6 +97,16 @@ export default function GestionReclamos({ addToast, adminId }) {
   return (
     <>
       <PanelBlock title="📋 Gestión de Reclamos">
+        <div className="header-actions">
+          <span style={{ color: 'var(--text-light)', fontSize: '0.85rem', fontWeight: 500 }}>
+            {reclamos.length} reclamo{reclamos.length !== 1 ? 's' : ''}
+            {reclamos.filter((r) => r.estado === 'pendiente').length > 0 && (
+              <span style={{ marginLeft: 8, color: '#92400e', background: '#fef3c7', padding: '2px 10px', borderRadius: 10, fontSize: '0.8rem' }}>
+                {reclamos.filter((r) => r.estado === 'pendiente').length} pendiente(s)
+              </span>
+            )}
+          </span>
+        </div>
         <ErrorBanner message={error} onRetry={load} />
         {loading ? (
           <Spinner text="Cargando reclamos..." />
@@ -115,15 +122,15 @@ export default function GestionReclamos({ addToast, adminId }) {
       {respondiendo && (
         <div className="modal-overlay" onClick={() => !saving && setRespondiendo(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3 style={{ color: 'var(--ld-blue)', marginBottom: 8 }}>Responder Reclamo #{respondiendo.idReclamo}</h3>
-            <p style={{ color: 'var(--text-dark)', marginBottom: 16, lineHeight: 1.5 }}>
-              <strong>Cliente:</strong> {getClienteName(respondiendo.cliente?.idCliente)}
-              <br />
+            <h3>Responder Reclamo #{respondiendo.idReclamo}</h3>
+            <div style={{ background: 'var(--ld-blue-light)', borderRadius: 10, padding: '12px 16px', marginBottom: 16, fontSize: '0.9rem', lineHeight: 1.5 }}>
+              <strong>Cliente:</strong> {getClienteName(respondiendo.cliente?.idCliente)}<br />
               <strong>Descripción:</strong> {respondiendo.descripcion}
-            </p>
+            </div>
             <div className="form-group">
               <label>Tu respuesta</label>
               <textarea
+                className="form-control"
                 value={respuesta}
                 onChange={(e) => setRespuesta(e.target.value)}
                 rows={4}
@@ -131,11 +138,11 @@ export default function GestionReclamos({ addToast, adminId }) {
               />
             </div>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 20 }}>
-              <button className="btn-secondary" onClick={() => setRespondiendo(null)} disabled={saving}>
+              <button className="btn btn-ghost btn-md" onClick={() => setRespondiendo(null)} disabled={saving}>
                 Cancelar
               </button>
               <button
-                className="btn-primary"
+                className="btn btn-primary btn-md"
                 onClick={() => handleResponder(respondiendo.idReclamo)}
                 disabled={saving || !respuesta.trim()}
               >
