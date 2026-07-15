@@ -4,7 +4,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://tu-app-render.onrender.com/api/$1"
+      "destination": "https://calculadora-de-huella-de-carbono.onrender.com/api/$1"
     }
   ]
 }
