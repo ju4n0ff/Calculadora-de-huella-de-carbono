@@ -43,6 +43,7 @@ export default function SolicitarSuministro({ clienteId, onSuministroCreado, add
         <div className="form-group">
           <label>Código del Medidor</label>
           <input
+            className="form-control"
             value={form.codigoMedidor}
             onChange={(e) => setForm({ ...form, codigoMedidor: e.target.value })}
             placeholder="Ej: MED-001234"
@@ -51,7 +52,7 @@ export default function SolicitarSuministro({ clienteId, onSuministroCreado, add
         </div>
         <div className="form-group">
           <label>Tipo de Conexión</label>
-          <select value={form.tipoConexion} onChange={(e) => setForm({ ...form, tipoConexion: e.target.value })}>
+          <select className="form-control" value={form.tipoConexion} onChange={(e) => setForm({ ...form, tipoConexion: e.target.value })}>
             <option value="monofasica">Monofásica</option>
             <option value="trifasica">Trifásica</option>
             <option value="bifasica">Bifásica</option>
@@ -59,7 +60,7 @@ export default function SolicitarSuministro({ clienteId, onSuministroCreado, add
         </div>
         <div className="form-group">
           <label>Fuente de Energía</label>
-          <select value={form.fuenteEnergia} onChange={(e) => setForm({ ...form, fuenteEnergia: e.target.value })}>
+          <select className="form-control" value={form.fuenteEnergia} onChange={(e) => setForm({ ...form, fuenteEnergia: e.target.value })}>
             <option value="red-publica">Red Pública</option>
             <option value="solar">Solar</option>
             <option value="eolica">Eólica</option>
@@ -67,9 +68,9 @@ export default function SolicitarSuministro({ clienteId, onSuministroCreado, add
         </div>
         <button
           type="submit"
-          className="btn-primary"
+          className="btn btn-primary btn-lg"
           disabled={saving || !form.codigoMedidor}
-          style={{ width: 'auto', padding: '12px 32px', marginTop: 8 }}
+          style={{ marginTop: 8 }}
         >
           {saving ? 'Enviando...' : 'Solicitar Suministro'}
         </button>

@@ -36,8 +36,8 @@ export default function Login() {
       <div className="login-container">
         <header className="login-header">
           <div className="brand-icon">⚡</div>
-          <h2>PowerCalc</h2>
-          <p>Gestión Energética Inteligente</p>
+          <h2>EcoHuella</h2>
+          <p>Gestión de Carbono</p>
         </header>
 
         <div className="role-selector">

@@ -9,7 +9,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/tarifas")
-@CrossOrigin(origins = "*")
 public class TarifaController {
 
     @Autowired
@@ -35,20 +34,12 @@ public class TarifaController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Tarifa> actualizar(@PathVariable Integer id, @RequestBody Tarifa tarifa) {
-        try {
-            return ResponseEntity.ok(tarifaService.actualizar(id, tarifa));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(tarifaService.actualizar(id, tarifa));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
-        try {
-            tarifaService.eliminar(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        tarifaService.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }

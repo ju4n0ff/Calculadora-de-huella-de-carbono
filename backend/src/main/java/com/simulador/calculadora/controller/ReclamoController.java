@@ -9,7 +9,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/reclamos")
-@CrossOrigin(origins = "*")
 public class ReclamoController {
 
     @Autowired
@@ -46,13 +45,10 @@ public class ReclamoController {
 
     @PutMapping("/{id}/responder")
     public ResponseEntity<?> responder(@PathVariable Integer id, @RequestBody Map<String, Object> body) {
-        try {
-            String respuesta = (String) body.get("respuesta");
-            Integer idAdmin = Integer.valueOf(body.get("idAdministrador").toString());
-            Reclamo actualizado = reclamoService.responder(id, respuesta, idAdmin);
-            return ResponseEntity.ok(actualizado);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        String respuesta = (String) body.get("respuesta");
+        Integer idAdmin = Integer.valueOf(body.get("idAdministrador").toString());
+        String nuevoEstado = (String) body.getOrDefault("estado", "resuelto");
+        Reclamo actualizado = reclamoService.responder(id, respuesta, idAdmin, nuevoEstado);
+        return ResponseEntity.ok(actualizado);
     }
 }

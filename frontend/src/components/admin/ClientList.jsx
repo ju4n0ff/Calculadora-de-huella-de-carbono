@@ -22,7 +22,7 @@ export default function ClientList({ clientes, consumos }) {
         <b key="id">CLI-{c.idCliente}</b>,
         c.nombre,
         c.direccion || 'No registrada',
-        <span key="tarifa" style={{ color: 'var(--ld-blue)', fontWeight: 700 }}>Tarifa {c.idTarifa}</span>,
+        <span key="tarifa" style={{ color: 'var(--ld-blue)', fontWeight: 700 }}>{c.tarifa?.nombre || 'Sin tarifa'}</span>,
         <span key="kwh" style={{ fontWeight: 700, color }}>
           {totalCliente.toFixed(2)} kWh
           <small style={{ color: 'var(--text-light)', marginLeft: 6 }}>({consumosCliente.length} registros)</small>
@@ -38,7 +38,7 @@ export default function ClientList({ clientes, consumos }) {
           <SearchInput value={search} onChange={setSearch} placeholder="Buscar por nombre o ID..." />
         </div>
         <DataTable
-          headers={['ID Cliente', 'Nombre Completo', 'Dirección', 'ID Tarifa', 'Total Consumido']}
+          headers={['ID Cliente', 'Nombre Completo', 'Dirección', 'Tarifa', 'Total Consumido']}
           rows={rows}
           emptyMessage="No hay clientes registrados."
         />

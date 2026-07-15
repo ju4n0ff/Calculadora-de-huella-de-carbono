@@ -9,7 +9,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/suministros")
-@CrossOrigin(origins = "*")
 public class SuministroController {
 
     @Autowired
@@ -37,11 +36,7 @@ public class SuministroController {
 
     @PutMapping("/{id}/estado")
     public ResponseEntity<Suministro> actualizarEstado(@PathVariable Integer id, @RequestBody Map<String, String> body) {
-        try {
-            String estado = body.get("estado");
-            return ResponseEntity.ok(suministroService.actualizarEstado(id, estado));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        String estado = body.get("estado");
+        return ResponseEntity.ok(suministroService.actualizarEstado(id, estado));
     }
 }

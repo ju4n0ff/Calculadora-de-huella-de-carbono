@@ -43,6 +43,9 @@ export default function ClientDashboard() {
 
   const clienteId = user?.datos?.idCliente
   const clienteNombre = user?.datos?.nombre || 'Cliente'
+  const tarifaCliente = user?.datos?.tarifa
+  const precioKwh = tarifaCliente?.precioKwh ?? 0.68
+  const nombreTarifa = tarifaCliente?.nombre || 'BT5B'
 
   const addToast = useCallback((msg) => {
     const id = Date.now()
@@ -111,7 +114,7 @@ export default function ClientDashboard() {
     }
   }, [activePanel, store])
 
-  const guardarConsumo = async ({ totalKwh, costoSoles, co2Kg, horas, dias }) => {
+  const guardarConsumo = async ({ totalKwh, costoSoles, co2Kg, horas, dias, artefactos }) => {
     if (!suministroId) return
     setSaving(true)
     try {
@@ -124,6 +127,7 @@ export default function ClientDashboard() {
         costoTotal: costoSoles,
         huellaCarbono: co2Kg,
         fecha: new Date().toISOString().split('T')[0],
+        detalles: artefactos ? JSON.stringify(artefactos.map(a => ({ id: a.id, nombre: a.nombre, watts: a.watts }))) : null,
       }
       await consumoApi.guardar(payload)
       addToast('¡Consumo guardado exitosamente en la base de datos!')
@@ -146,7 +150,7 @@ export default function ClientDashboard() {
         title={panels.find((p) => p.id === activePanel)?.label}
         userName={`Hola, ${clienteNombre}`}
         avatarIcon="⚡"
-        brandText="PowerCalc"
+        brandText="EcoHuella"
         brandSub="Cliente"
       >
         {activePanel === 'dashboard' && (
@@ -191,6 +195,8 @@ export default function ClientDashboard() {
               onGuardar={guardarConsumo}
               saving={saving}
               loadingSum={loadingSum}
+              precioKwh={precioKwh}
+              nombreTarifa={nombreTarifa}
             />
           </div>
         )}
