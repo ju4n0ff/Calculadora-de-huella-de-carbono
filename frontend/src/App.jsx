@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import Spinner from './components/ui/Spinner'
 import ErrorBoundary from './components/ui/ErrorBoundary'
-import { Analytics } from "@vercel/analytics/next" 
+import { Analytics } from "@vercel/analytics/react"
 
 
 const Login = lazy(() => import('./pages/Login'))
